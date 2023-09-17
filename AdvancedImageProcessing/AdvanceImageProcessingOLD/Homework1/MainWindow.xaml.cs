@@ -1,9 +1,8 @@
 ﻿using Microsoft.Win32;
+using System;
 using System.Drawing;
-
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
 using Image = System.Windows.Controls.Image;
@@ -15,24 +14,31 @@ namespace Homework1 {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
+            SaveFileBtn.IsEnabled = false;
+            LeftRotateBtn.IsEnabled = false;
+            RightRotateBtn.IsEnabled = false;
         }
 
-        string _fileName;
         Bitmap _processBmp;
         Bitmap _sourceBmp;
 
         private void OpenFileBtn_Click(object sender, RoutedEventArgs e) {
+     
             var dialog = new OpenFileDialog();
             dialog.Filter = "Supported Image File|*.jpg; *.png; *.ppm; *.bmp";
             if(dialog.ShowDialog() == true) {
                 
                 Bitmap srcImg = new Bitmap(dialog.FileName);
-
-                _processBmp = new Bitmap(srcImg);
                 _sourceBmp = new Bitmap(srcImg);
+                _processBmp = new Bitmap(srcImg);
+                
+                SourceImgBox.Source = BitmapToImageSource(_sourceBmp);
+                ProcessedImgBox.Source = BitmapToImageSource(_processBmp);
 
-                SourceImgBox.Source = BitmapToImageSource(srcImg);
-                ProcessedImgBox.Source = BitmapToImageSource(srcImg);
+                SaveFileBtn.IsEnabled = true;
+                LeftRotateBtn.IsEnabled = true;
+                RightRotateBtn.IsEnabled = true;
+
             }
         }
         
@@ -40,22 +46,61 @@ namespace Homework1 {
         }
 
         private void RightRotateBtn_Click(object sender, RoutedEventArgs e) {
-            RightRoate();
+            RightRotate();
+            UpdateImageBox(ProcessedImgBox, _processBmp);
         }
 
         private void LeftRotateBtn_Click(object sender, RoutedEventArgs e) {
             LeftRotate();
             UpdateImageBox(ProcessedImgBox, _processBmp);
         }
-        private void RightRoate() {
+        private void RightRotate() {
+            int width = _processBmp.Width;
+            int height = _processBmp.Height;
 
-        }
-        private void LeftRotate() {
-            for (int i = 0; i < _processBmp.Width / 2; i++) {
-                for (int j = 0; j < _processBmp.Height / 2; j++) {
-                    _processBmp.SetPixel(i, j, Color.AliceBlue);
+            
+            int newWidth = width;
+            int newHeight = height; 
+
+            Bitmap processing = new(newHeight, newWidth); 
+
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    Color pixel = _processBmp.GetPixel(i, j);
+                    
+                    int x = newHeight - 1 - j; 
+                    int y = i;
+
+                    processing.SetPixel(x, y, pixel);
                 }
             }
+
+            _processBmp = processing;
+        }
+
+
+        private void LeftRotate() {
+            int width = _processBmp.Width;
+            int height = _processBmp.Height;
+
+
+            int newWidth = width;
+            int newHeight = height;
+
+            Bitmap processing = new(newHeight, newWidth);
+
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    Color pixel = _processBmp.GetPixel(i, j);
+
+                    int x = j;
+                    int y = newWidth - 1 - i;
+
+                    processing.SetPixel(x, y, pixel);
+                }
+            }
+
+            _processBmp = processing;
         }
 
         private BitmapImage BitmapToImageSource(Bitmap bitmap) {
@@ -71,6 +116,7 @@ namespace Homework1 {
             }
         }
         private void UpdateImageBox(Image imgBox, Bitmap bitmap) {
+
             imgBox.Source = BitmapToImageSource(bitmap);
         }
     }

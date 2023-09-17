@@ -1,0 +1,6 @@
+Offical Course Website
+https://sites.google.com/gapps.ntnu.edu.tw/neokent/teaching/2023fall-information-security-a-hands-on-approach
+
+
+Seedlab
+https://seedsecuritylabs.org/labsetup.html

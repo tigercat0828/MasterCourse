@@ -1,0 +1,6 @@
+09/24 AIP : HW1 Read/Write & Rotation Image
+09/26 ACG : HW1 A Ray Tracer Part A
+10/01 AIP : HW2 Image Histogram
+10/17 ACG : HW2 A Ray Tracer Part B
+
+
