@@ -1,0 +1,188 @@
+{
+  "main": {
+    "id": "ae233673fcd8fe0a",
+    "type": "split",
+    "children": [
+      {
+        "id": "8244ac57b02c7d04",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1a3bd4a5d44c7293",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Note Ch 2, Supervised Learning.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "d03d70381d7e15f6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Note Ch 2, Supervised Learning.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "71898fb12336204d",
+    "type": "split",
+    "children": [
+      {
+        "id": "958e3710a52e7cb0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2d6bc15cb056b175",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "fc154fdaf35f940b",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "de093ff0cb90de43",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "466748a87a8ed847",
+    "type": "split",
+    "children": [
+      {
+        "id": "9309a1b7cbe3aefa",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f34c1ddcc413b5e1",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Note Ch 2, Supervised Learning.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "ff4f0094d9ebe4ce",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Note Ch 2, Supervised Learning.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "781a179d4e3e66a4",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "198d33a56187f68c",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Note Ch 2, Supervised Learning.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "1a3bd4a5d44c7293",
+  "lastOpenFiles": [
+    "Note Ch 1, Introduction.md",
+    "homework/陳建壹.hw1.md",
+    "ML.ch0-Syllabus.pdf",
+    "ML.ch1-Introduction.pdf",
+    "_assets/Pasted image 20230921015525.png",
+    "_assets/Pasted image 20230921013707.png",
+    "_assets/Pasted image 20230921013637.png",
+    "Note Ch 2, Supervised Learning.md",
+    "_assets/Pasted image 20230921002855.png",
+    "_assets/Pasted image 20230921002751.png",
+    "_assets/Pasted image 20230921002554.png",
+    "ML.ch2-Supervised Learning.pdf",
+    "_assets/Pasted image 20230921000942.png",
+    "_assets/Pasted image 20230920235317.png",
+    "_assets/Pasted image 20230920233851.png",
+    "_assets/Pasted image 20230920200415.png",
+    "_assets",
+    "reference/lec4.pdf",
+    "homework",
+    "reference",
+    "新增資料夾",
+    "Homework/陳建壹.hw1.md",
+    "ML.ch12-Deep Learning.pdf",
+    "ML.ch9-Decision Trees.pdf"
+  ]
+}

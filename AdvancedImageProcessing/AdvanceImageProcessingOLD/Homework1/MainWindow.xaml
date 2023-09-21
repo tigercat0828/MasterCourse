@@ -21,8 +21,7 @@
             <Button Name="RightRotateBtn" Margin="2 2 2 2" Click="RightRotateBtn_Click">順時針旋轉</Button>
             <Button Name="LeftRotateBtn" Margin="2 2 2 2" Click="LeftRotateBtn_Click">逆時鐘旋轉</Button>
         </StackPanel>
-
-        <Image Name="SourceImgBox" Grid.Row="1" Grid.Column="0"   Margin="10 10 5 10"></Image>
+        <Image Name="SourceImgBox" Grid.Row="1" Grid.Column="0"   Margin="10 10 5 10" Source="/Assets/arrow.png"></Image>
         <Image Name="ProcessedImgBox" Grid.Row="1" Grid.Column="1" Margin="5 10 10 10"></Image>
     </Grid>
 </Window>
