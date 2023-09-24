@@ -1,0 +1,20 @@
+seed/dees
+root/dessubuntu
+
+root uid =0
+
+cat /etc/passwd
+
+bob:x:1001:1001:,,,:/home/bob:/bin/bash 
+(bob:password(has remove to other):uid:gid:,,,:shell program he use)
+
+/etc/gruop (Group File)
+/etc/shadow (Real Password store here)
+
+
+
+command
+cat| 檢視檔案連續內容用的指令
+id | print out ID and group information
+su <username> | 切換當前使用者到bob
+man <programname> | 顯示程式使用手冊

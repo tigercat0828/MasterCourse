@@ -1,4 +1,4 @@
-09/20 機 器  學 習 hw1 VC dimension
+V 09/20 機 器  學 習 hw1 VC dimension
 09/23 資安攻防演練 Hands-On Homework 1
 09/23 高等影像處理 image read/write & rotation
 09/25 高等電腦圖學 : HW1 A Ray Tracer Part A
@@ -6,6 +6,8 @@
 10/07 高等影像處理 Gaussian & salt-pepper noise
 10/17 高等電腦圖學 : HW2 A Ray Tracer Part B
 
+
+09/20 機 器  學 習 hw1 VC dimension
 
 
 
