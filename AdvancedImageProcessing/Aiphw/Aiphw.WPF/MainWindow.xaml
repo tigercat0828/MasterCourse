@@ -4,24 +4,40 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Aiphw.WPF"
+        xmlns:views="clr-namespace:Aiphw.WPF.Views"
         mc:Ignorable="d"
         Title="AIP 61247051S" Width="800" Height="450" >
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <Button Name="OpenFileBtn" Margin="2 2 2 2" Click="OpenFileBtn_Click">開啟檔案</Button>
-            <Button Name="SaveFileBtn" Margin="2 2 2 2" Click="SaveFileBtn_Click">儲存檔案</Button>
-            <Button Name="LeftRotateBtn" Margin="2 2 2 2" Click="LeftRotateBtn_Click">向左旋轉</Button>
-            <Button Name="RightRotateBtn" Margin="2 2 2 2" Click="RightRotateBtn_Click">向右旋轉</Button>
-        </StackPanel>
-        <Image Name="InputImgBox" Grid.Row="1" Grid.Column="0"   Margin="10 10 5 10" Source="/Assets/arrow.png"></Image>
-        <Image Name="OutputImgBox" Grid.Row="1" Grid.Column="1" Margin="5 10 10 10"></Image>
-    </Grid>
+    <TabControl>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock Width="100" FontSize="14" TextAlignment="Center">Rotation</TextBlock>
+            </TabItem.Header>
+            <views:RotationView />
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock Width="100" FontSize="14" TextAlignment="Center">Histogram</TextBlock>
+            </TabItem.Header>
+            <views:HistogramView/>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock Width="100" FontSize="14" TextAlignment="Center">Noise</TextBlock>
+            </TabItem.Header>
+            <views:HistogramView/>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock Width="100" FontSize="14" TextAlignment="Center">Smooth</TextBlock>
+            </TabItem.Header>
+            <views:HistogramView/>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock Width="100" FontSize="14" TextAlignment="Center">Edge Detect</TextBlock>
+            </TabItem.Header>
+            <views:HistogramView/>
+        </TabItem>
+    </TabControl>
+  
 </Window>

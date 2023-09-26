@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
-namespace ACGRT; 
+namespace ACGRT;
 public static class InputParser {
-    public static Scene Parse(string filename) {
-        Scene scene = new Scene();
-        
-        // Parse the input lines
-        string[] lines = File.ReadAllLines(filename);
+    public static (Camera, Scene) Parse(string filename, out int Width, out int Height) {
+        Width = 0; Height = 0;
 
-        foreach (string line in lines) {
+        Scene scene = new Scene();
+        Camera camera = new Camera();
+
+        // Parse the input lines
+        string[] textLines = File.ReadAllLines(filename);
+        foreach (string line in textLines) {
             string[] tokens = line.Split(' ');
             if (tokens.Length < 2) {
                 Console.WriteLine("Invalid input line: " + line);
@@ -22,7 +19,7 @@ public static class InputParser {
             string type = tokens[0];
 
             switch (type) {
-               
+
                 case "S":
                     Sphere sphere = new Sphere(
                         new Vector3(
@@ -33,7 +30,7 @@ public static class InputParser {
                         float.Parse(tokens[4])
                     );
                     Console.WriteLine($"S {sphere.origin}, {sphere.radius}");
-                    scene.Objects.Add(sphere);
+                    scene.Items.Add(sphere);
                     break;
                 case "T":
                     Triangle triangle = new Triangle(
@@ -41,41 +38,35 @@ public static class InputParser {
                         new Vector3(float.Parse(tokens[4]), float.Parse(tokens[5]), float.Parse(tokens[6])),
                         new Vector3(float.Parse(tokens[7]), float.Parse(tokens[8]), float.Parse(tokens[9]))
                     );
-                    Console.WriteLine($"T {triangle.position1}, {triangle.position2}, {triangle.position3}");
-                    scene.Objects.Add(triangle);
+                    Console.WriteLine($"T {triangle.pos1}, {triangle.pos2}, {triangle.pos3}");
+                    scene.Items.Add(triangle);
                     break;
                 case "E":
-                    scene.MainCam = new Camera(new Vector3(
-                            float.Parse(tokens[1]),
-                            float.Parse(tokens[2]),
-                            float.Parse(tokens[3])
-                        )
-                    );
-                    Console.WriteLine($"E {scene.MainCam.origin}");
+                    camera.SetOrigin(new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3])));
+                    Console.WriteLine($"E {camera.origin}");
                     break;
                 case "O":
-                    scene.Viewport = new Viewport(
-                        new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3])),
-                        new Vector3(float.Parse(tokens[4]), float.Parse(tokens[5]), float.Parse(tokens[6])),
-                        new Vector3(float.Parse(tokens[7]), float.Parse(tokens[8]), float.Parse(tokens[9])),
-                        new Vector3(float.Parse(tokens[10]), float.Parse(tokens[11]), float.Parse(tokens[12]))
-                    );
-                    Console.WriteLine($"O {scene.Viewport.positionUL}, {scene.Viewport.positionUR}, {scene.Viewport.positionLL}, {scene.Viewport.positionLR}");
+                    Vector3 UL = new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3]));
+                    Vector3 UR = new Vector3(float.Parse(tokens[4]), float.Parse(tokens[5]), float.Parse(tokens[6]));
+                    Vector3 LL = new Vector3(float.Parse(tokens[7]), float.Parse(tokens[8]), float.Parse(tokens[9]));
+                    Vector3 LR = new Vector3(float.Parse(tokens[10]), float.Parse(tokens[11]), float.Parse(tokens[12]));
+                    camera.Configure(UL, UR, LL, LR);
+                    Console.WriteLine($"O {UL}, {UR}, {LL}, {LR}");
                     break;
                 case "R":
-                    scene.WIDTH = int.Parse(tokens[1]);
-                    scene.HEIGHT = int.Parse(tokens[2]);
-                    scene.Output = new RawImage(scene.WIDTH, scene.HEIGHT);
-                    Console.WriteLine($"R {scene.WIDTH} x {scene.HEIGHT}");
+                    Width = int.Parse(tokens[1]);
+                    Height = int.Parse(tokens[2]);
+                   
+                    Console.WriteLine($"R {Width} x {Height}");
                     break;
                 default:
                     Console.WriteLine("Unknown input type: " + type);
                     break;
             }
-        }
 
+        }
         // add viewport to raycam
-        Console.WriteLine("Parse Finish ...");
-        return scene;
+        Console.WriteLine("Parse Complete");
+        return (camera, scene);
     }
 }

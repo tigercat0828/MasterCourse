@@ -1,10 +1,25 @@
 ﻿using ACGRT;
 
 public class Scene {
-    public Camera MainCam;
-    public List<Primitive> Objects = new();
-    public Viewport Viewport;
-    public int WIDTH;
-    public int HEIGHT;
-    public RawImage Output;
+    public List<IHitable> Items = new();
+
+    public void AddItem(IHitable item) {
+        Items.Add(item);
+    }
+    public bool Hit(Ray ray, ref float tMin, ref float tMax, out HitRecord record) {
+        // traverse all the item the scene hold
+        HitRecord tempRec = new();
+        record = tempRec;
+        bool hitAny = false;
+        float currentCloset = tMax;
+
+        foreach (var item in Items) {
+            if (item.Hit(ray, ref tMin, ref currentCloset, out tempRec)) {
+                hitAny = true;
+                currentCloset = tempRec.t;
+                record = tempRec;
+            }
+        }
+        return hitAny;
+    }
 };

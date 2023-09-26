@@ -1,7 +1,6 @@
-﻿using Microsoft.Win32.SafeHandles;
-using System.Numerics;
+﻿using System.Numerics;
 
-namespace ACGRT; 
+namespace ACGRT;
 public struct Ray {
 
     public Vector3 origin;
