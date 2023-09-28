@@ -15,10 +15,11 @@ public class RawImage : ICloneable, IDisposable {
     private const int A = 3;
     public const int BYTE4 = 4;
     private Bitmap _bitmap;
+    
     public int Width => _bitmap.Width;
     public int Height => _bitmap.Height;
 
-    public byte[] Pixels;
+    public byte[] Pixels { get; private set; }
     public RawImage() { }
     public RawImage(string filename) {
         string extension = Path.GetExtension(filename);

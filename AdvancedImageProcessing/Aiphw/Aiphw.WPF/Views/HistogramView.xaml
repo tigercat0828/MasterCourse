@@ -4,22 +4,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Aiphw.WPF.Views"
+             xmlns:ScottPlot="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Margin="0 5 0 0">
+    <Grid Margin="5 5 5 5" >
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
-
         </Grid.ColumnDefinitions>
+        
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-            <Button Name="OpenFileBtn" Margin="2 2 2 2" Click="OpenFileBtn_Click">開啟檔案</Button>
+            <Button Name="OpenFileBtn" Click="OpenFileBtn_Click" Style="{StaticResource DefaultButton}">開啟檔案</Button>
         </StackPanel>
-        <Image Name="InputImgBox" Grid.Row="1" Grid.Column="0"   Margin="10 10 5 10"></Image>
-        <Image Name="OutputImgBox" Grid.Row="1" Grid.Column="1" Margin="5 10 10 10"></Image>
+        <Border  Grid.Row="1" Grid.Column="0" Style="{StaticResource DefaultBorder}">
+            <Image Name="OutputImgBox"  Margin="5 10 10 10" ></Image>
+        </Border>
+        <Border  Grid.Row="1" Grid.Column="1" Style="{StaticResource DefaultBorder}">
+            <ScottPlot:WpfPlot Name="Histogram" />
+        </Border>
     </Grid>
 </UserControl>

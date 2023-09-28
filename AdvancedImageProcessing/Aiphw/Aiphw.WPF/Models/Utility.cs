@@ -27,8 +27,5 @@ namespace Aiphw.WPF.Models
         public static void UpdateImageBox(Image imgBox, Bitmap bitmap) {
             imgBox.Source = BitmapToImageSource(bitmap);
         }
-        public static void DrawHistogram(string XasixName, string YaxisName, ) {
-
-        }
     }
 }

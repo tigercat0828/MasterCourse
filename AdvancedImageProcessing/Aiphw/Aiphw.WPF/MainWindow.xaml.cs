@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using ScottPlot.Statistics;
+using System.Windows;
 
 namespace Aiphw.WPF {
     /// <summary>
@@ -8,6 +9,5 @@ namespace Aiphw.WPF {
         public MainWindow() {
             InitializeComponent();
         }
-
     }
 }

@@ -48,6 +48,20 @@ public static class ImageProcessing {
         grayscale.FinishEdit();
         return grayscale;
     }
+    public static RawImage GrayScale2(RawImage image) {
+        RawImage grayscale = new(image.Width, image.Height);
+        byte[] pixels = image.Pixels;
+        for (int x = 0; x < image.Width; x++) {
+            for (int y = 0; y < image.Height; y++) {
+                
+                int index = y * image.Width + x;
+                byte gray = (byte)((color[0] + color[1] + color[2]) / 3);
+                grayscale.SetPixel(x, y, new byte[] { gray, gray, gray, 255 });
+            }
+        }
+        grayscale.FinishEdit();
+        return grayscale;
+    }
     public static RawImage RightRotate(RawImage input) {
         int width = input.Width;
         int height = input.Height;

@@ -6,37 +6,33 @@
         xmlns:local="clr-namespace:Aiphw.WPF"
         xmlns:views="clr-namespace:Aiphw.WPF.Views"
         mc:Ignorable="d"
-        Title="AIP 61247051S" Width="800" Height="450" >
+        Title="AIP 61247051S" Width="1600" Height="900" >
     <TabControl>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Width="100" FontSize="14" TextAlignment="Center">Rotation</TextBlock>
+                <TextBlock Style="{StaticResource DefaultTextBlock}">Rotation</TextBlock>
             </TabItem.Header>
             <views:RotationView />
         </TabItem>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Width="100" FontSize="14" TextAlignment="Center">Histogram</TextBlock>
+                <TextBlock Style="{StaticResource DefaultTextBlock}">Histogram</TextBlock>
             </TabItem.Header>
-            <views:HistogramView/>
         </TabItem>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Width="100" FontSize="14" TextAlignment="Center">Noise</TextBlock>
+                <TextBlock Style="{StaticResource DefaultTextBlock}">Noise</TextBlock>
             </TabItem.Header>
-            <views:HistogramView/>
         </TabItem>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Width="100" FontSize="14" TextAlignment="Center">Smooth</TextBlock>
+                <TextBlock Style="{StaticResource DefaultTextBlock}">Smooth</TextBlock>
             </TabItem.Header>
-            <views:HistogramView/>
         </TabItem>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Width="100" FontSize="14" TextAlignment="Center">Edge Detect</TextBlock>
+                <TextBlock Style="{StaticResource DefaultTextBlock}">Edge Detect</TextBlock>
             </TabItem.Header>
-            <views:HistogramView/>
         </TabItem>
     </TabControl>
   

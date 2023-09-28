@@ -13,7 +13,19 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Note Ch 2, Supervised Learning.md",
+                "file": "homework/陳建壹.hw1.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "807367606378cf14",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "homework/陳建壹.hw2.md",
                 "mode": "source",
                 "source": false
               }
@@ -31,7 +43,8 @@
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -97,7 +110,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Note Ch 2, Supervised Learning.md",
+                "file": "homework/陳建壹.hw2.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +127,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Note Ch 2, Supervised Learning.md",
+                "file": "homework/陳建壹.hw2.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +150,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Note Ch 2, Supervised Learning.md"
+                "file": "homework/陳建壹.hw2.md"
               }
             }
           }
@@ -158,16 +171,17 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "1a3bd4a5d44c7293",
+  "active": "807367606378cf14",
   "lastOpenFiles": [
-    "Note Ch 1, Introduction.md",
     "homework/陳建壹.hw1.md",
+    "homework/陳建壹.hw2.md",
+    "Note Ch 2, Supervised Learning.md",
+    "Note Ch 1, Introduction.md",
     "ML.ch0-Syllabus.pdf",
     "ML.ch1-Introduction.pdf",
     "_assets/Pasted image 20230921015525.png",
     "_assets/Pasted image 20230921013707.png",
     "_assets/Pasted image 20230921013637.png",
-    "Note Ch 2, Supervised Learning.md",
     "_assets/Pasted image 20230921002855.png",
     "_assets/Pasted image 20230921002751.png",
     "_assets/Pasted image 20230921002554.png",
