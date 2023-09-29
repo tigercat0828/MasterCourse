@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http.Headers;
 
 namespace Aiphw.WPF.Models;
 public static class ImageProcessing {
@@ -37,31 +36,26 @@ public static class ImageProcessing {
     #endregion
     public static RawImage GrayScale(RawImage image) {
         RawImage grayscale = new(image.Width, image.Height);
+        Span<byte> inputPixels = new Span<byte>(image.Pixels);
+        Span<byte> outputPixels = new Span<byte>(grayscale.Pixels);
 
         for (int x = 0; x < image.Width; x++) {
             for (int y = 0; y < image.Height; y++) {
-                byte[] color = image.GetPixel(x, y);
-                byte gray = (byte)((color[0] + color[1] + color[2]) / 3);
-                grayscale.SetPixel(x, y, new byte[] { gray, gray, gray, 255 } );
+
+                int index = (y * image.Width + x) * 4;
+
+                byte gray = (byte)((inputPixels[index] + inputPixels[index + 1] + inputPixels[index + 2]) / 3);
+
+                outputPixels[index] = gray;
+                outputPixels[index + 1] = gray;
+                outputPixels[index + 2] = gray;
+                outputPixels[index + 3] = 255;
             }
         }
         grayscale.FinishEdit();
         return grayscale;
     }
-    public static RawImage GrayScale2(RawImage image) {
-        RawImage grayscale = new(image.Width, image.Height);
-        byte[] pixels = image.Pixels;
-        for (int x = 0; x < image.Width; x++) {
-            for (int y = 0; y < image.Height; y++) {
-                
-                int index = y * image.Width + x;
-                byte gray = (byte)((color[0] + color[1] + color[2]) / 3);
-                grayscale.SetPixel(x, y, new byte[] { gray, gray, gray, 255 });
-            }
-        }
-        grayscale.FinishEdit();
-        return grayscale;
-    }
+
     public static RawImage RightRotate(RawImage input) {
         int width = input.Width;
         int height = input.Height;

@@ -1,5 +1,4 @@
-﻿using ScottPlot.Statistics;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Aiphw.WPF {
     /// <summary>

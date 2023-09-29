@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Image = System.Windows.Controls.Image;
 
-namespace Aiphw.WPF.Models
-{
-    public static class Utility
-    {
+namespace Aiphw.WPF.Models {
+    public static class Utility {
         private static BitmapImage BitmapToImageSource(Bitmap bitmap) {
             using (MemoryStream memory = new MemoryStream()) {
                 bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);

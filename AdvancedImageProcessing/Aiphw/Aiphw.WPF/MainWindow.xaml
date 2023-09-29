@@ -7,7 +7,7 @@
         xmlns:views="clr-namespace:Aiphw.WPF.Views"
         mc:Ignorable="d"
         Title="AIP 61247051S" Width="1600" Height="900" >
-    <TabControl>
+    <TabControl SelectedIndex="2">
         <TabItem>
             <TabItem.Header>
                 <TextBlock Style="{StaticResource DefaultTextBlock}">Rotation</TextBlock>
@@ -18,13 +18,15 @@
             <TabItem.Header>
                 <TextBlock Style="{StaticResource DefaultTextBlock}">Histogram</TextBlock>
             </TabItem.Header>
+            <views:HistogramView/>
         </TabItem>
         <TabItem>
             <TabItem.Header>
                 <TextBlock Style="{StaticResource DefaultTextBlock}">Noise</TextBlock>
             </TabItem.Header>
+            <views:NoiseView />
         </TabItem>
-        <TabItem>
+        <!--<TabItem>
             <TabItem.Header>
                 <TextBlock Style="{StaticResource DefaultTextBlock}">Smooth</TextBlock>
             </TabItem.Header>
@@ -33,7 +35,7 @@
             <TabItem.Header>
                 <TextBlock Style="{StaticResource DefaultTextBlock}">Edge Detect</TextBlock>
             </TabItem.Header>
-        </TabItem>
+        </TabItem>-->
     </TabControl>
   
 </Window>

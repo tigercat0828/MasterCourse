@@ -1,11 +1,7 @@
 ﻿using Aiphw.WPF.Models;
 using Microsoft.Win32;
-using System.Drawing;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using Image = System.Windows.Controls.Image;
 
 namespace Aiphw.WPF.Views {
     /// <summary>
@@ -65,6 +61,6 @@ namespace Aiphw.WPF.Views {
             Utility.UpdateImageBox(OutputImgBox, _outputRaw.ToBitmap());
         }
 
-        
+
     }
 }

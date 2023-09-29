@@ -17,9 +17,9 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-            <Button Name="OpenFileBtn" Click="OpenFileBtn_Click" Style="{StaticResource DefaultButton}">開啟檔案</Button>
-        </StackPanel>
+        <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left"
+                Name="OpenFileBtn" Click="OpenFileBtn_Click" Style="{StaticResource DefaultButton}">開啟檔案</Button>
+        <TextBlock Grid.Row="0" Grid.Column="1" Name="ImageInfoText" Style="{StaticResource DefaultTextBlock}" HorizontalAlignment="Left" Width="200"/>
         <Border  Grid.Row="1" Grid.Column="0" Style="{StaticResource DefaultBorder}">
             <Image Name="OutputImgBox"  Margin="5 10 10 10" ></Image>
         </Border>

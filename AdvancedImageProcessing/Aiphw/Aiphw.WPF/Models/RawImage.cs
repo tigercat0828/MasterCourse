@@ -15,7 +15,7 @@ public class RawImage : ICloneable, IDisposable {
     private const int A = 3;
     public const int BYTE4 = 4;
     private Bitmap _bitmap;
-    
+
     public int Width => _bitmap.Width;
     public int Height => _bitmap.Height;
 
@@ -56,11 +56,11 @@ public class RawImage : ICloneable, IDisposable {
         /// todo : optimize here
         int index = (y * Width + x) * BYTE4;
         return new byte[] {
-            Pixels[index + B],
-            Pixels[index + G],
-            Pixels[index + R],
-            Pixels[index + A],
-        };
+                Pixels[index + B],
+                Pixels[index + G],
+                Pixels[index + R],
+                Pixels[index + A],
+            };
     }
 
     public void SaveFile(string filename) {
