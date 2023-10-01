@@ -22,7 +22,6 @@
             <Button Name="RightRotateBtn"   Click="RightRotateBtn_Click"    Style="{StaticResource DefaultButton}">向右旋轉</Button>
         </StackPanel>
         <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource DefaultBorder}">
-            <!--BorderBrush="Gray" BorderThickness="1"-->
             <Image Name="InputImgBox"   Margin="10 10 5 10"></Image>
         </Border>
         <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource DefaultBorder}">

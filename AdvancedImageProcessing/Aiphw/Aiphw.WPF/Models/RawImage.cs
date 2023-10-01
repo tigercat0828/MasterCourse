@@ -9,10 +9,8 @@ namespace Aiphw.WPF.Models;
 
 [SuppressMessage("Microsoft.Design", "CA1416:ValidatePlatformCompatibility")]
 public class RawImage : ICloneable, IDisposable {
-    private const int B = 0;
-    private const int G = 1;
-    private const int R = 2;
-    private const int A = 3;
+    private const int B = 0, G = 1, R = 2, A = 3;
+
     public const int BYTE4 = 4;
     private Bitmap _bitmap;
 

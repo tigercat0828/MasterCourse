@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Aiphw.WPF.Views"
              xmlns:ScottPlot="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Margin="5 5 5 5" >
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
@@ -21,23 +21,25 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
-            <Button Name="OpenFileBtn" Click="OpenFileBtn_Click" Style="{StaticResource DefaultButton}">開啟檔案</Button>
-            <Button Name="GaussianBtn" Click="OpenFileBtn_Click" Style="{StaticResource DefaultButton}">高斯雜訊</Button>
-            <Button Name="PepperBtn" Click="OpenFileBtn_Click" Style="{StaticResource DefaultButton}">椒鹽雜訊</Button>
-            <Slider Name="NoiseSlider" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="5" Width="400" ValueChanged="Slider_ValueChanged"></Slider>
-            <TextBlock Name="SldierValueText" Style="{StaticResource DefaultTextBlock}" Text="0"></TextBlock>
+            <Button Name="OpenFileBtn"  Style="{StaticResource DefaultButton}" Click="OpenFileBtn_Click" >開啟檔案</Button>
+            <Button Name="SaveFileBtn"  Style="{StaticResource DefaultButton}" HorizontalAlignment="Right" Click="SaveFileBtn_Click">儲存檔案</Button>
+            <Button Name="GaussianBtn"  Style="{StaticResource DefaultButton}" Click="GaussianBtn_Click">高斯雜訊</Button>
+            <Button Name="PepperBtn"    Style="{StaticResource DefaultButton}" Click="PepperBtn_Click">椒鹽雜訊</Button>
+            <Slider Name="NoiseSlider" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="5" TickPlacement="BottomRight" TickFrequency="1" Width="400" Margin="10" 
+                    ValueChanged="Slider_ValueChanged" IsSnapToTickEnabled="True"/>
+            <TextBox Name="SldierValueText" Style="{StaticResource DefaultTextBox}" Width="40" 
+                     Text="{Binding ElementName=NoiseSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
-
+     
         <Border  Grid.Row="1" Grid.Column="0" Style="{StaticResource DefaultBorder}">
-            <Image></Image>
+            <Image Name="InputImgBox"></Image>
         </Border>
         <Border  Grid.Row="1" Grid.Column="1" Style="{StaticResource DefaultBorder}">
-            <Image></Image>
+            <Image Name="NoiseImgBox"></Image>
         </Border>
         <Border  Grid.Row="1" Grid.Column="2" Style="{StaticResource DefaultBorder}">
-            <Image></Image>
+            <Image Name="OutputImgBox"></Image>
         </Border>
         
         <Border  Grid.Row="2" Grid.Column="0" Style="{StaticResource DefaultBorder}">

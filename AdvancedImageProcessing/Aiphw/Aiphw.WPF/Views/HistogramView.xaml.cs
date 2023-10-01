@@ -1,6 +1,6 @@
 ﻿using Aiphw.WPF.Models;
 using Microsoft.Win32;
-using ScottPlot;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,6 +13,7 @@ namespace Aiphw.WPF.Views {
         public int SliderValue = 50;
         public HistogramView() {
             InitializeComponent();
+            SaveFileBtn.IsEnabled = false;
         }
         private void OpenFileBtn_Click(object sender, RoutedEventArgs e) {
 
@@ -23,12 +24,23 @@ namespace Aiphw.WPF.Views {
 
                 RawImage loadRaw = new RawImage(dialog.FileName);
 
-
                 _outputRaw = ImageProcessing.GrayScale(loadRaw);
                 Utility.UpdateImageBox(OutputImgBox, _outputRaw.ToBitmap());
 
                 SetImageInfoTextBlock();
                 DrawHistogram();
+
+                SaveFileBtn.IsEnabled = true;
+            }
+        }
+        private void SaveFileBtn_Click(object sender, RoutedEventArgs e) {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "JPEG Image (*.jpg)|*.jpg|PNG Image (*.png)|*.png|Bitmap Image (*.bmp)|*.bmp|PPM Image (*.ppm)|*.ppm";
+            saveFileDialog.Title = "Save Image";
+
+            if (saveFileDialog.ShowDialog() == true) {
+                string filename = saveFileDialog.FileName;
+                _outputRaw.SaveFile(filename);
             }
         }
         public void SetImageInfoTextBlock() {
@@ -36,30 +48,11 @@ namespace Aiphw.WPF.Views {
         }
         private void DrawHistogram() {
 
+            Utility.SetSingleChannelHistogram(HistoGraph.Plot, _outputRaw, channel: 0, Color.FromArgb(128, 128, 128), "gray");
 
-
-            // add random data to the histogram
-            byte[] byteArray = _outputRaw.Pixels;
-
-            double[] grayArray = new double[byteArray.Length / 4]; // Create a new array to store every fourth element
-
-            for (int i = 0; i < grayArray.Length; i++) {
-                grayArray[i] = byteArray[i * 4];
-            }
-
-            // create a histogram with a fixed number of bins
-            ScottPlot.Statistics.Histogram hist = new(min: 0, max: 255, binCount: 128);
-            Plot plot = Histogram.Plot;
-
-            plot.Clear();
-            hist.AddRange(grayArray);
-            plot.AddBar(values: hist.Counts, positions: hist.Bins);
-            plot.XAxis.Label("intensity");
-            plot.YAxis.Label("frequency");
-
-            plot.SetAxisLimits(yMin: 0);
-
-            Histogram.Render();
+            HistoGraph.Render();
         }
+
+
     }
 }

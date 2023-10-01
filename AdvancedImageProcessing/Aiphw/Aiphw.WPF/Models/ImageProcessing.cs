@@ -34,10 +34,12 @@ public static class ImageProcessing {
         }
     }
     #endregion
+
+    const int B = 0, G = 1, R = 2, A = 3;
     public static RawImage GrayScale(RawImage image) {
         RawImage grayscale = new(image.Width, image.Height);
-        Span<byte> inputPixels = new Span<byte>(image.Pixels);
-        Span<byte> outputPixels = new Span<byte>(grayscale.Pixels);
+        Span<byte> inputPixels = new(image.Pixels);
+        Span<byte> outputPixels = new(grayscale.Pixels);
 
         for (int x = 0; x < image.Width; x++) {
             for (int y = 0; y < image.Height; y++) {
@@ -99,5 +101,119 @@ public static class ImageProcessing {
         }
         processing.FinishEdit();
         return processing;
+    }
+
+    public static RawImage SaltPepperNoise(RawImage input, out RawImage noise, int noiseValue) {
+        Random random = new Random();
+        RawImage output = new RawImage(input);
+        noise = new RawImage(input.Width, input.Height);
+
+        Span<byte> outputPixels = output.Pixels;
+        Span<byte> noisePixels = noise.Pixels;
+
+        noiseValue /= 2;
+        for (int i = 0; i < input.Width * input.Height; i++) {
+            noisePixels[i * 4] = 128; // R
+            noisePixels[i * 4 + 1] = 128; // G
+            noisePixels[i * 4 + 2] = 128; // B
+            noisePixels[i * 4 + 3] = 255; // A
+
+            int rnd = random.Next(100);
+            if (rnd <= noiseValue) {
+                // black
+                outputPixels[i * 4 + B] = 0;
+                outputPixels[i * 4 + G] = 0;
+                outputPixels[i * 4 + R] = 0;
+                outputPixels[i * 4 + A] = 255;
+
+                noisePixels[i * 4 + B] = 0;
+                noisePixels[i * 4 + G] = 0;
+                noisePixels[i * 4 + R] = 0;
+                noisePixels[i * 4 + A] = 255;
+            }
+            else if (rnd >= 100 - noiseValue) {
+                // white
+                outputPixels[i * 4 + B] = 255;
+                outputPixels[i * 4 + G] = 255;
+                outputPixels[i * 4 + R] = 255;
+                outputPixels[i * 4 + A] = 255;
+
+                noisePixels[i * 4 + B] = 255;
+                noisePixels[i * 4 + G] = 255;
+                noisePixels[i * 4 + R] = 255;
+                noisePixels[i * 4 + A] = 255;
+            }
+        }
+
+        output.FinishEdit();
+        noise.FinishEdit();
+        return output;
+    }
+
+
+    public static RawImage GaussianNoise(RawImage input, out RawImage noise, float sigma) {
+        Random varphi = new();
+        Random gamma = new();
+
+        int width = input.Width;
+        int height = input.Height;
+        RawImage output = new RawImage(width, height);
+        noise = new RawImage(width, height);
+        for (int y = 0; y < height; y++) {
+            for (int x = 1; x < width; x += 2) {
+
+                float sqrt = MathF.Sqrt(-2.0f * MathF.Log(gamma.NextSingle()));
+                float trian = varphi.NextSingle() * 2.0f * MathF.PI;
+                float z1 = sigma * MathF.Cos(trian) * sqrt;
+                float z2 = sigma * MathF.Sin(trian) * sqrt;
+
+                byte[] noised1 = new byte[4];
+                byte[] noised2 = new byte[4];
+                byte[] pixel1 = input.GetPixel(x - 1, y);
+                byte[] pixel2 = input.GetPixel(x, y);
+
+                noised1[B] = (byte)Math.Clamp(pixel1[B] + z1, 0, 255);
+                noised1[G] = (byte)Math.Clamp(pixel1[G] + z1, 0, 255);
+                noised1[R] = (byte)Math.Clamp(pixel1[R] + z1, 0, 255);
+                noised1[A] = 255;
+
+                noised2[B] = (byte)Math.Clamp(pixel2[B] + z2, 0, 255);
+                noised2[G] = (byte)Math.Clamp(pixel2[G] + z2, 0, 255);
+                noised2[R] = (byte)Math.Clamp(pixel2[R] + z2, 0, 255);
+                noised2[A] = 255;
+
+                output.SetPixel(x - 1, y, noised1);
+                output.SetPixel(x, y, noised2);
+
+                byte z1b = (byte)z1;
+                byte z2b = (byte)z2;
+                noise.SetPixel(x - 1, y, new byte[] { z1b, z1b, z1b, 255 });
+                noise.SetPixel(x, y, new byte[] { z2b, z2b, z2b, 255 });
+            }
+        }
+        output.FinishEdit();
+        noise.FinishEdit();
+        return output;
+    }
+
+    public static RawImage Overlay(RawImage input, RawImage noise) {
+
+        if (input.Width != noise.Width || input.Height != noise.Height) {
+            return null;
+        }
+        RawImage output = new(input.Width, input.Height);
+        for (int y = 0; y < input.Height; y++) {
+            for (int x = 0; x < input.Width; x++) {
+                byte[] ip = input.GetPixel(x, y);    // input pixel
+                byte[] np = noise.GetPixel(x, y);    // noise pixel
+                byte[] op = new byte[4];
+                op[3] = 255;
+                for (int i = 0; i < 3; i++) {
+                    op[i] = (byte)Math.Clamp(ip[i] + np[i], 0, 255);
+                }
+            }
+        }
+        output.FinishEdit();
+        return output;
     }
 }
