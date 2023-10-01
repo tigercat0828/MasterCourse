@@ -22,9 +22,10 @@ namespace Aiphw.WPF.Views {
         RawImage outputRaw;
         private void OpenFileBtn_Click(object sender, RoutedEventArgs e) {
 
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "Image Files (*.jpg; *.jpeg; *.png; *.bmp; *.ppm)|*.jpg; *.jpeg; *.png; *.bmp; *.ppm";
-            dialog.Title = "Open Image";
+            OpenFileDialog dialog = new OpenFileDialog {
+                Filter = "Image Files (*.jpg; *.jpeg; *.png; *.bmp; *.ppm)|*.jpg; *.jpeg; *.png; *.bmp; *.ppm",
+                Title = "Open Image"
+            };
             if (dialog.ShowDialog() == true) {
                 loadRaw = new RawImage(dialog.FileName);
 

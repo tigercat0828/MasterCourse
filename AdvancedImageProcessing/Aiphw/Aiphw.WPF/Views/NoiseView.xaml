@@ -11,9 +11,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="2*"/>
-            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -41,16 +39,6 @@
         <Border  Grid.Row="1" Grid.Column="2" Style="{StaticResource DefaultBorder}">
             <Image Name="OutputImgBox"></Image>
         </Border>
-        
-        <Border  Grid.Row="2" Grid.Column="0" Style="{StaticResource DefaultBorder}">
-            <TextBlock Style="{StaticResource DefaultTextBlock}">Input Image</TextBlock>
-        </Border>
-        <Border  Grid.Row="2" Grid.Column="1" Style="{StaticResource DefaultBorder}">
-            <TextBlock Style="{StaticResource DefaultTextBlock}">Noise Image</TextBlock>
-        </Border>
-        <Border  Grid.Row="2" Grid.Column="2" Style="{StaticResource DefaultBorder}">
-            <TextBlock Style="{StaticResource DefaultTextBlock}">Output Image</TextBlock>
-        </Border>
 
         <Border  Grid.Row="3" Grid.Column="0" Style="{StaticResource DefaultBorder}">
             <ScottPlot:WpfPlot Name="InputHistogram" />
@@ -62,14 +50,5 @@
             <ScottPlot:WpfPlot Name="OutputHistogram" />
         </Border>
 
-        <Border  Grid.Row="4" Grid.Column="0" Style="{StaticResource DefaultBorder}">
-            <TextBlock Style="{StaticResource DefaultTextBlock}">Input Histo</TextBlock>
-        </Border>
-        <Border  Grid.Row="4" Grid.Column="1" Style="{StaticResource DefaultBorder}">
-            <TextBlock Style="{StaticResource DefaultTextBlock}">Noise Histo</TextBlock>
-        </Border>
-        <Border  Grid.Row="4" Grid.Column="2" Style="{StaticResource DefaultBorder}">
-            <TextBlock Style="{StaticResource DefaultTextBlock}">Output Histo</TextBlock>
-        </Border>
     </Grid>
 </UserControl>

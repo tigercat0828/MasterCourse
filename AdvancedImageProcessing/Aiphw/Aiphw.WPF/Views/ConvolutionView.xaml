@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Aiphw.WPF.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignWidth="1600" d:DesignHeight="900" >
     <Grid Margin="5 5 5 5" >
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -32,7 +32,8 @@
         </Border>
         <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource DefaultBorder}" >
             <StackPanel Name="StackPanel">
-                <TextBlock Style="{StaticResource DefaultTextBlock}" FontSize="20">Mask</TextBlock>
+                <Button Name="ProcessBtn"  Margin="10 5 10 5" Height="50" FontWeight="Bold" FontSize="30" Click="ProcessBtn_Click">Go</Button>
+                
                 <Grid Name="MaskGrid" Margin="5 5 5 5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -48,12 +49,20 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                  
                 </Grid>
-                <Button Name="ResetAll0" Margin="10 5 10 5" Height="30" Click="ResetAll0_Click">Reset All 0</Button>
-                <Button Name="ResetAll1" Margin="10 5 10 5" Height="30" Click="ResetAll1_Click">Reset All 1</Button>
-                
+                <TextBlock Style="{StaticResource DefaultTextBlock}" FontSize="20">Mask</TextBlock>
+                <Button Name="Size3x3Btn" Margin="10 5 10 5" Height="30" Click="Size3x3Btn_Click" >Size 3x3</Button>
+                <Button Name="Size5x5Btn" Margin="10 5 10 5" Height="30" Click="Size5x5Btn_Click" >Size 5x5</Button>
+                <Button Name="ResetAllZeroBtn" Margin="10 5 10 5" Height="30" Click="ResetAllZeroBtn_Click">Reset All to 0</Button>
+                <Button Name="ResetAllOneBtn" Margin="10 5 10 5" Height="30" Click="ResetAllOneBtn_Click">Reset All to 1</Button>
+                <TextBlock Margin="0 5 0 0" Style="{StaticResource DefaultTextBlock}" Width="200">支援Tab快速選擇mask的格子</TextBlock>
             </StackPanel>
+        </Border>
+        <Border Style="{StaticResource DefaultBorder}" Grid.Row="1" Grid.Column="0">
+            <Image Name="InputImgBox"></Image>
+        </Border>
+        <Border Style="{StaticResource DefaultBorder}" Grid.Row="1" Grid.Column="1">
+            <Image Name="OutputImgBox"></Image>
         </Border>
     </Grid>
 </UserControl>
