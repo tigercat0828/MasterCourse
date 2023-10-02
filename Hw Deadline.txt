@@ -1,10 +1,9 @@
 V 09/20 機器學習概論 hw1 VC dimension
-F 09/23 資安攻防演練 Hands-On Homework 1
 V 09/23 高等影像處理 image read/write & rotation
 V 09/25 高等電腦圖學 : HW1 A Ray Tracer Part A
 V 9/28  機器學習概論 Pf E(X+Y)=E(X)+E(Y)
-09/30 高等影像處理 image histogram
-10/07 高等影像處理 Gaussian & salt-pepper noise
+V 09/30 高等影像處理 image histogram
+V 10/07 高等影像處理 Gaussian & salt-pepper noise
 10/14 高等影像處理 Image smoothing and edge detection
 10/17 高等電腦圖學 : HW2 A Ray Tracer Part B
 
