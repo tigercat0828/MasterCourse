@@ -1,4 +1,5 @@
 ﻿using ACGRT;
+using System;
 using System.Numerics;
 
 public class Program {
@@ -11,26 +12,28 @@ public class Program {
         float t = 0.5f * (uniDirection.Y + 1.0f);
         return Vector3.Lerp(topColor, bottomColor, t);
     }
+    static int i =0;
     public static Vector3 RayCast(Ray ray, Scene scene) {
         HitRecord rec;
         float min = 0;
         float max = float.MaxValue;
         if (scene.Hit(ray, ref min, ref max, out rec)) {
-            //R=255*(x+1.0)/2.0, G=255*(y+1.0)/2.0, B=255*(z+1.0)/2.0
-            Vector3 hp = rec.hitpoint;
-            float R = 255 * (hp.X + 1.0f) / 2.0f;
-            float G = 255 * (hp.Y + 1.0f) / 2.0f;
-            float B = 255 * (hp.Z + 1.0f) / 2.0f;
-            return new Vector3(R, G, B);
+            Console.WriteLine(i++);
+            Random rd = new();
+            float rnd1 = (float)rd.NextDouble() * 2.0f - 1.0f;
+            float rnd2 = (float)rd.NextDouble() * 2.0f - 1.0f;
+            float rnd3 = (float)rd.NextDouble() * 2.0f - 1.0f;
+            var target = Vector3.Normalize(rec.normal) + Vector3.Normalize(new Vector3(rnd1, rnd2, rnd3));
+
+            return 0.5f * RayCast(new Ray(rec.hitpoint, target), scene);
         }
         else {
-            return Vector3.Zero;
-            //return RenderSky(ray);
+            //return Vector3.Zero;
+            return RenderSky(ray);
         }
     }
     // ----------------------------------
     private static void Main(string[] args) {
-
 
         #region Scene Setup
         (Camera eye, Scene scene) = InputParser.Parse("./Assets/hw1_input.txt", out int WIDTH, out int HEIGHT);
