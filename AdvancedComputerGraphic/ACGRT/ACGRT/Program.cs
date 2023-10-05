@@ -18,7 +18,7 @@ public class Program {
         float min = 0;
         float max = float.MaxValue;
         if (scene.Hit(ray, ref min, ref max, out rec)) {
-            Console.WriteLine(i++);
+            //Console.WriteLine(i++);
             Random rd = new();
             float rnd1 = (float)rd.NextDouble() * 2.0f - 1.0f;
             float rnd2 = (float)rd.NextDouble() * 2.0f - 1.0f;
@@ -28,8 +28,8 @@ public class Program {
             return 0.5f * RayCast(new Ray(rec.hitpoint, target), scene);
         }
         else {
-            //return Vector3.Zero;
             return RenderSky(ray);
+            return Vector3.Zero;
         }
     }
     // ----------------------------------

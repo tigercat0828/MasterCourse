@@ -15,7 +15,7 @@ public class Triangle : IHitable {
         // pre-computed
         Vector3 v0_v1 = pos3 - pos1;
         Vector3 v0_v2 = pos3 - pos2;
-        normal = Vector3.Cross(v0_v1, v0_v2);
+        normal = Vector3.Cross( v0_v2,v0_v1);
         area2 = normal.Length();
     }
 

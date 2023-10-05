@@ -4,7 +4,7 @@ namespace Aiphw.WPF.Models;
 public static class ImageProcessing {
     #region DEBUG
     public static void PrintPixelImage(RawImage image) {
-
+        const int B = 0, G = 1, R = 2, A = 3;
         int Width = image.Width;
         int Height = image.Height;
         Console.WriteLine($"Width = {Width}");
@@ -14,11 +14,11 @@ public static class ImageProcessing {
         for (int y = 0; y < Height; y++) {
             for (int x = 0; x < Width; x++) {
                 int index = (y * Width + x) * 4;
-                byte B = image.Pixels[index + 0];
-                byte G = image.Pixels[index + 1];
-                byte R = image.Pixels[index + 2];
-                byte A = image.Pixels[index + 3];
-                Console.Write($"<{R,3} {G,3} {B,3} {A,3}>, ");
+                byte b = image.Pixels[index + B];
+                byte g = image.Pixels[index + G];
+                byte r = image.Pixels[index + R];
+                byte a = image.Pixels[index + A];
+                Console.Write($"[{r,3} {g,3} {b,3} {a,3} ], ");
             }
             Console.WriteLine();
         }
@@ -26,16 +26,37 @@ public static class ImageProcessing {
     public static void PrintPixelStream(RawImage image) {
 
         for (int i = 0; i < image.Pixels.Length; i += RawImage.BYTE4) {
-            byte B = image.Pixels[i];
-            byte G = image.Pixels[i + 1];
-            byte R = image.Pixels[i + 2];
-            byte A = image.Pixels[i + 3];
-            Console.WriteLine($"{R,3} {G,3} {B,3} {A,3}");
+            byte b = image.Pixels[i + B];
+            byte g = image.Pixels[i + G];
+            byte r = image.Pixels[i + R];
+            byte a = image.Pixels[i + A];
+            Console.WriteLine($"[{r,3} {g,3} {b,3} {a,3} ], ");
         }
     }
     #endregion
 
     const int B = 0, G = 1, R = 2, A = 3;
+    public static byte[] PaddingForKernel(RawImage image, int size) {
+
+        int oldWidth = image.Width;
+        int oldHeight = image.Height;
+        int newWidth = oldWidth + size - 1;
+        int newHeight = oldHeight + size - 1;
+        size /= 2;
+        byte[] destin = new byte[newWidth * newHeight];
+        byte[] source = image.Pixels;
+        for (int i = 0; i < oldWidth; i++) {
+            Array.Copy(
+                source,                     // source array
+                i * oldWidth,               // source index
+                destin,                     // destination array
+                (i + size) * newHeight + size,    // destination index
+                oldWidth                    // length
+            );
+        }
+        return destin;
+    }
+
     public static RawImage GrayScale(RawImage image) {
         RawImage grayscale = new(image.Width, image.Height);
         Span<byte> inputPixels = new(image.Pixels);

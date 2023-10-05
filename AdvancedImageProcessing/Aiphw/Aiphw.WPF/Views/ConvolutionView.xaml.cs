@@ -1,6 +1,8 @@
 ﻿using Aiphw.WPF.Models;
 using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -8,13 +10,17 @@ namespace Aiphw.WPF.Views {
 
     public partial class ConvolutionView : UserControl {
 
-        enum Size {
-            m3x3, m5x5
+        enum MaskSize {
+            m3x3=3, m5x5=5
         }
-
+        enum MaskType {
+            Custom, Smooth, SobelX, SobelY
+        }
         TextBox[,] _MaskCellTextBox = new TextBox[5, 5];
-        Size _MaskSize = Size.m3x3;
+        MaskSize _MaskSize = MaskSize.m3x3;
+        MaskType _MaskType = MaskType.Custom;
         List<float> _MaskKernel = new();
+
         RawImage inputRaw;
         public ConvolutionView() {
             InitializeComponent();
@@ -50,17 +56,56 @@ namespace Aiphw.WPF.Views {
                 string filename = saveFileDialog.FileName;
             }
         }
-        private void LoadMask() {
+        private void LoadMask(MaskType type) {
             _MaskKernel.Clear();
-            int start = (_MaskSize == Size.m5x5) ? 0 : 1;
-            int end = (_MaskSize == Size.m3x3) ? 5 : 4;
-            for (int i = start; i < end; i++) {
-                for (int j = start; j < end; j++) {
-                    _MaskKernel.Add(float.Parse(_MaskCellTextBox[i, j].Text));
-                }
-            }
-        }
+            switch (type) {
+                case MaskType.Custom: 
+                    int start = _MaskSize == MaskSize.m5x5 ? 0 : 1;
+                    int end = _MaskSize == MaskSize.m3x3 ? 5 : 4;
+                    for (int i = start; i < end; i++) {
+                        for (int j = start; j < end; j++) {
+                            _MaskKernel.Add(float.Parse(_MaskCellTextBox[i, j].Text));
+                        }
+                    }
 
+                    break;
+                
+
+                case MaskType.Smooth: 
+                    _MaskSize = MaskSize.m5x5;
+                    _MaskKernel.AddRange(new float[] {
+                        2,  4,  5,  4,  2,
+                        4,  9,  12, 9,  4,
+                        5,  12, 15, 12, 5,
+                        4,  9,  12, 9,  4,
+                        2,  4,  5,  4,  2
+                        }
+                    );
+                    for (int i = 0; i < _MaskKernel.Count; i++) _MaskKernel[i] /= 159;
+                    break;
+
+                case MaskType.SobelX:
+                    _MaskSize = MaskSize.m3x3;
+                    _MaskKernel.AddRange(new float[] {
+                        -1, 0,  1,
+                        -2, 0,  2,
+                        -1, 0,  1,
+                        }
+                    );
+                    break;
+                case MaskType.SobelY:
+                    _MaskSize = MaskSize.m3x3;
+                    _MaskKernel.AddRange(new float[] {
+                        -1, -2, -1,
+                         0,  0,  0,
+                         1,  2,  1,
+                        }
+                    );
+                    break;
+            }
+
+        }
+        
         private void ProcessBtn_Click(object sender, RoutedEventArgs e) {
 
         }
@@ -88,10 +133,10 @@ namespace Aiphw.WPF.Views {
             }
         }
         private void Size3x3Btn_Click(object sender, RoutedEventArgs e) {
-            SetMaskSize(Size.m3x3);
+            SetMaskSize(MaskSize.m3x3);
         }
         private void Size5x5Btn_Click(object sender, RoutedEventArgs e) {
-            SetMaskSize(Size.m5x5);
+            SetMaskSize(MaskSize.m5x5);
         }
         private void ResetAllZeroBtn_Click(object sender, RoutedEventArgs e) {
             SetMaskCellTextBoxAll("0");
@@ -100,18 +145,18 @@ namespace Aiphw.WPF.Views {
             SetMaskCellTextBoxAll("1");
         }
         private void SetMaskCellTextBoxAll(string text) {
-            int start = (_MaskSize == Size.m5x5) ? 0 : 1;
-            int end = (_MaskSize == Size.m5x5) ? 5 : 4;
+            int start = (_MaskSize == MaskSize.m5x5) ? 0 : 1;
+            int end = (_MaskSize == MaskSize.m5x5) ? 5 : 4;
             for (int i = start; i < end; i++) {
                 for (int j = start; j < end; j++) {
                     _MaskCellTextBox[i, j].Text = text;
                 }
             }
         }
-        private void SetMaskSize(Size size) {
+        private void SetMaskSize(MaskSize size) {
             _MaskSize = size;
-            bool isEnabled = (size == Size.m3x3) ? false : true;
-            string text = (size == Size.m3x3) ? string.Empty : "1";
+            bool isEnabled = (size == MaskSize.m3x3) ? false : true;
+            string text = (size == MaskSize.m3x3) ? string.Empty : "1";
             for (int i = 0; i < 5; i++) {
                 _MaskCellTextBox[0, i].IsEnabled = isEnabled;
                 _MaskCellTextBox[0, i].Text = text;
@@ -125,6 +170,16 @@ namespace Aiphw.WPF.Views {
                 _MaskCellTextBox[i, 4].Text = text;
             }
         }
+        [DllImport("Kernel32")]
+        public static extern void AllocConsole();
 
+        [DllImport("Kernel32")]
+        public static extern void FreeConsole();
+        private void DebugBtn_Click(object sender, RoutedEventArgs e) {
+            AllocConsole();
+            Console.WriteLine("test");
+            RawImage image = new RawImage(5,5);
+            ImageProcessing.PrintPixelImage(image);
+        }
     }
 }

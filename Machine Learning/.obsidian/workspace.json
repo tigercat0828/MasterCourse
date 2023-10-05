@@ -32,6 +32,18 @@
             }
           },
           {
+            "id": "2bd8230e27071122",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "homework/陳建壹.hw3.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
             "id": "d03d70381d7e15f6",
             "type": "leaf",
             "state": {
@@ -44,7 +56,7 @@
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -94,7 +106,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "466748a87a8ed847",
@@ -110,7 +123,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "homework/陳建壹.hw2.md",
+                "file": "homework/陳建壹.hw3.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -127,7 +140,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "homework/陳建壹.hw2.md",
+                "file": "homework/陳建壹.hw3.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -150,7 +163,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "homework/陳建壹.hw2.md"
+                "file": "homework/陳建壹.hw3.md"
               }
             }
           }
@@ -171,10 +184,12 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "807367606378cf14",
+  "active": "2bd8230e27071122",
   "lastOpenFiles": [
-    "homework/陳建壹.hw1.md",
+    "homework/陳建壹.hw3.pdf",
     "homework/陳建壹.hw2.md",
+    "homework/陳建壹.hw3.md",
+    "homework/陳建壹.hw1.md",
     "Note Ch 2, Supervised Learning.md",
     "Note Ch 1, Introduction.md",
     "ML.ch0-Syllabus.pdf",

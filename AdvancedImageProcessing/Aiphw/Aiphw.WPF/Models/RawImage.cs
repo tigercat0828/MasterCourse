@@ -37,6 +37,10 @@ public class RawImage : ICloneable, IDisposable {
         _bitmap = new Bitmap(width, height);
         Bitmap2Pixels();
     }
+    public RawImage(byte[] pixels, int width, int height) {
+        this.Pixels = pixels.ToArray();
+        Pixels2Bitmap();
+    }
     public Bitmap ToBitmap() {
         return new Bitmap(_bitmap);
     }
