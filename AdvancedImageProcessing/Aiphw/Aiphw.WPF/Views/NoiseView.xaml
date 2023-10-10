@@ -20,34 +20,34 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
-            <Button Name="OpenFileBtn"  Style="{StaticResource DefaultButton}" Click="OpenFileBtn_Click" >開啟檔案</Button>
-            <Button Name="SaveFileBtn"  Style="{StaticResource DefaultButton}" HorizontalAlignment="Right" Click="SaveFileBtn_Click">儲存檔案</Button>
-            <Button Name="GaussianBtn"  Style="{StaticResource DefaultButton}" Click="GaussianBtn_Click">高斯雜訊</Button>
-            <Button Name="PepperBtn"    Style="{StaticResource DefaultButton}" Click="PepperBtn_Click">椒鹽雜訊</Button>
-            <Slider Name="NoiseSlider" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="5" TickPlacement="BottomRight" TickFrequency="1" Width="400" Margin="10" 
+            <Button Name="c_OpenFileBtn"  Style="{StaticResource DefaultButton}" Click="OpenFileBtn_Click" >開啟檔案</Button>
+            <Button Name="c_SaveFileBtn"  Style="{StaticResource DefaultButton}" HorizontalAlignment="Right" Click="SaveFileBtn_Click">儲存檔案</Button>
+            <Button Name="c_GaussianBtn"  Style="{StaticResource DefaultButton}" Click="GaussianBtn_Click">高斯雜訊</Button>
+            <Button Name="c_PepperBtn"    Style="{StaticResource DefaultButton}" Click="PepperBtn_Click">椒鹽雜訊</Button>
+            <Slider Name="c_NoiseSlider" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="5" TickPlacement="BottomRight" TickFrequency="1" Width="400" Margin="10" 
                     ValueChanged="Slider_ValueChanged" IsSnapToTickEnabled="True"/>
             <TextBox Name="SldierValueText" Style="{StaticResource DefaultTextBox}" Width="40" 
-                     Text="{Binding ElementName=NoiseSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding ElementName=c_NoiseSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
      
         <Border  Grid.Row="1" Grid.Column="0" Style="{StaticResource DefaultBorder}">
-            <Image Name="InputImgBox"></Image>
+            <Image Name="c_InputImgBox"></Image>
         </Border>
         <Border  Grid.Row="1" Grid.Column="1" Style="{StaticResource DefaultBorder}">
-            <Image Name="NoiseImgBox"></Image>
+            <Image Name="c_NoiseImgBox"></Image>
         </Border>
         <Border  Grid.Row="1" Grid.Column="2" Style="{StaticResource DefaultBorder}">
-            <Image Name="OutputImgBox"></Image>
+            <Image Name="c_OutputImgBox"></Image>
         </Border>
 
         <Border  Grid.Row="3" Grid.Column="0" Style="{StaticResource DefaultBorder}">
-            <ScottPlot:WpfPlot Name="InputHistogram" />
+            <ScottPlot:WpfPlot Name="c_InputHistogram" />
         </Border>
         <Border  Grid.Row="3" Grid.Column="1" Style="{StaticResource DefaultBorder}">
-            <ScottPlot:WpfPlot Name="NoiseHistogram" />
+            <ScottPlot:WpfPlot Name="c_NoiseHistogram" />
         </Border>
         <Border  Grid.Row="3" Grid.Column="2" Style="{StaticResource DefaultBorder}">
-            <ScottPlot:WpfPlot Name="OutputHistogram" />
+            <ScottPlot:WpfPlot Name="c_OutputHistogram" />
         </Border>
 
     </Grid>

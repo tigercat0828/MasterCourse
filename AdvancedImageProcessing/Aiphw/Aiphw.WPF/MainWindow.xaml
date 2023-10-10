@@ -32,6 +32,12 @@
             </TabItem.Header>
             <views:ConvolutionView/>
         </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock Style="{StaticResource DefaultTextBlock}">Debug</TextBlock>
+            </TabItem.Header>
+            <views:DebugView/>
+        </TabItem>
 
     </TabControl>
 

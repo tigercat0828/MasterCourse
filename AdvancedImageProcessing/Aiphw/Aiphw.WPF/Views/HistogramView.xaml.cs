@@ -1,4 +1,5 @@
-﻿using Aiphw.WPF.Models;
+﻿using Aiphw.Models;
+using Aiphw.WPF.Extensions;
 using Microsoft.Win32;
 using System.Drawing;
 using System.Windows;
@@ -9,28 +10,30 @@ namespace Aiphw.WPF.Views {
     /// HistogramView.xaml 的互動邏輯
     /// </summary>
     public partial class HistogramView : UserControl {
-        RawImage _outputRaw;
-        public int SliderValue = 50;
+        RawImage m_outputRaw;
+        
         public HistogramView() {
             InitializeComponent();
-            SaveFileBtn.IsEnabled = false;
+            c_SaveFileBtn.IsEnabled = false;
         }
         private void OpenFileBtn_Click(object sender, RoutedEventArgs e) {
 
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "Image Files (*.jpg; *.jpeg; *.png; *.bmp; *.ppm)|*.jpg; *.jpeg; *.png; *.bmp; *.ppm";
-            dialog.Title = "Open Image";
+            OpenFileDialog dialog = new() { 
+                Filter = "Image Files (*.jpg; *.jpeg; *.png; *.bmp; *.ppm)|*.jpg; *.jpeg; *.png; *.bmp; *.ppm",
+                Title = "Open Image"
+            };
+            
             if (dialog.ShowDialog() == true) {
 
-                RawImage loadRaw = new RawImage(dialog.FileName);
+                RawImage loadRaw = new(dialog.FileName);
 
-                _outputRaw = ImageProcessing.GrayScale(loadRaw);
-                Utility.UpdateImageBox(OutputImgBox, _outputRaw.ToBitmap());
+                m_outputRaw = ImageProcessing.GrayScale(loadRaw);
+                Utility.UpdateImageBox(c_OutputImgBox, m_outputRaw.ToBitmap());
 
                 SetImageInfoTextBlock();
                 DrawHistogram();
 
-                SaveFileBtn.IsEnabled = true;
+                c_SaveFileBtn.IsEnabled = true;
             }
         }
         private void SaveFileBtn_Click(object sender, RoutedEventArgs e) {
@@ -40,17 +43,17 @@ namespace Aiphw.WPF.Views {
 
             if (saveFileDialog.ShowDialog() == true) {
                 string filename = saveFileDialog.FileName;
-                _outputRaw.SaveFile(filename);
+                m_outputRaw.SaveFile(filename);
             }
         }
         public void SetImageInfoTextBlock() {
-            ImageInfoText.Text = $"{_outputRaw.Width} x {_outputRaw.Height} = {_outputRaw.Width * _outputRaw.Height}";
+            c_ImageInfoText.Text = $"{m_outputRaw.Width} x {m_outputRaw.Height} = {m_outputRaw.Width * m_outputRaw.Height}";
         }
         private void DrawHistogram() {
 
-            Utility.SetSingleChannelHistogram(HistoGraph.Plot, _outputRaw, channel: 0, Color.FromArgb(128, 128, 128), "gray");
+            Utility.SetHistogramFromChannel(c_HistoGraph.Plot, m_outputRaw, channel: 0, Color.FromArgb(128, 128, 128), "gray");
 
-            HistoGraph.Render();
+            c_HistoGraph.Render();
         }
 
 

@@ -18,25 +18,25 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Button Grid.Row="0" Grid.Column="2"
-                Name="DebugBtn"         Style="{StaticResource DefaultButton}"  Click="DebugBtn_Click" HorizontalAlignment="Right">Debug</Button>
-
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
-            <Button Name="OpenFileBtn"      Style="{StaticResource DefaultButton}"  Click="OpenFileBtn_Click" >開啟檔案</Button>
-            <Button Name="SaveFileBtn"      Style="{StaticResource DefaultButton}"  Click="SaveFileBtn_Click">儲存檔案</Button>
-            <Button Name="SmoothBtn"        Style="{StaticResource DefaultButton}"  Click="SaveFileBtn_Click">平滑化</Button>
-            <Button Name="EdgeDetectBtn"    Style="{StaticResource DefaultButton}"  Click="SaveFileBtn_Click">邊緣偵測</Button>
-            
+            <Button Name="c_OpenFileBtn"      Style="{StaticResource DefaultButton}"  Click="OpenFileBtn_Click" >開啟檔案</Button>
+            <Button Name="c_SaveFileBtn"      Style="{StaticResource DefaultButton}"  Click="SaveFileBtn_Click">儲存檔案</Button>
+            <Button Name="c_SmoothBtn"        Style="{StaticResource DefaultButton}" Click="c_SmoothBtn_Click"  >平滑化</Button>
+            <Button Name="c_EdgeDetectBtn"    Style="{StaticResource DefaultButton}" Click="c_EdgeDetectBtn_Click"  >邊緣偵測</Button>
+
         </StackPanel>
-        <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource DefaultBorder}" >
-            <Image></Image>
+        
+        <Border Style="{StaticResource DefaultBorder}" Grid.Row="1" Grid.Column="0">
+            <Image Name="c_InputImgBox"></Image>
         </Border>
-        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource DefaultBorder}" >
-            <Image></Image>
+        <Border Style="{StaticResource DefaultBorder}" Grid.Row="1" Grid.Column="1">
+            <Image Name="c_OutputImgBox"></Image>
         </Border>
+        
         <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource DefaultBorder}" >
-            <StackPanel Name="StackPanel">
-                <Button Name="ProcessBtn"  Margin="10 5 10 5" Height="50" FontWeight="Bold" FontSize="30" Click="ProcessBtn_Click">Go</Button>
+            
+            <StackPanel Name="c_StackPanel">
+                <Button Name="c_ProcessBtn"  Margin="10 5 10 5" Height="50" FontWeight="Bold" FontSize="30" Click="ProcessBtn_Click">Go</Button>
                 
                 <Grid Name="MaskGrid" Margin="5 5 5 5">
                     <Grid.RowDefinitions>
@@ -54,31 +54,19 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                 </Grid>
+                
                 <TextBlock Style="{StaticResource DefaultTextBlock}" FontSize="20">Mask</TextBlock>
                 <TextBlock Margin="0 5 0 0" Style="{StaticResource DefaultTextBlock}" Width="200">支援Tab快速選擇mask的格子</TextBlock>
-                <Button Name="Size3x3Btn" Margin="10 5 10 5" Height="30" Click="Size3x3Btn_Click" >Size 3x3</Button>
-                <Button Name="Size5x5Btn" Margin="10 5 10 5" Height="30" Click="Size5x5Btn_Click" >Size 5x5</Button>
-                <Button Name="ResetAllZeroBtn" Margin="10 5 10 5" Height="30" Click="ResetAllZeroBtn_Click">Reset All to 0</Button>
-                <Button Name="ResetAllOneBtn" Margin="10 5 10 5" Height="30" Click="ResetAllOneBtn_Click">Reset All to 1</Button>
-                <TextBlock Margin="0 5 0 0" Style="{StaticResource DefaultTextBlock}">Pre-Built Mask</TextBlock>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Row="0" Grid.Column="0" Margin="5 5 5 5" Height="30">Smooth</Button>
-                    <Button Grid.Row="0" Grid.Column="1" Margin="5 5 5 5" Height="30">Edge Detect</Button>
-                </Grid>
+                <Button Name="c_Size3x3Btn" Margin="10 5 10 5" Height="30" Click="Size3x3Btn_Click" >Size 3x3</Button>
+                <Button Name="c_Size5x5Btn" Margin="10 5 10 5" Height="30" Click="Size5x5Btn_Click" >Size 5x5</Button>
+                <Button Name="c_ResetAllZeroBtn" Margin="10 5 10 5" Height="30" Click="ResetAllZeroBtn_Click">Reset All to 0</Button>
+                <Button Name="c_ResetAllOneBtn" Margin="10 5 10 5" Height="30" Click="ResetAllOneBtn_Click">Reset All to 1</Button>
+
+                <!--<Line X1="0" Y1="0" X2="{Binding ElementName=c_StackPanel, Path=ActualWidth}" Margin="0 50 0 0" Stroke="Gray" StrokeThickness="2"> </Line>-->
+                
+                
             </StackPanel>
         </Border>
-        <Border Style="{StaticResource DefaultBorder}" Grid.Row="1" Grid.Column="0">
-            <Image Name="InputImgBox"></Image>
-        </Border>
-        <Border Style="{StaticResource DefaultBorder}" Grid.Row="1" Grid.Column="1">
-            <Image Name="OutputImgBox"></Image>
-        </Border>
+        
     </Grid>
 </UserControl>
