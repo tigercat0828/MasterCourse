@@ -1,8 +1,6 @@
 ﻿using Aiphw.Models;
 using Aiphw.WPF.Extensions;
-using Microsoft.Win32;
 using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,10 +28,10 @@ namespace Aiphw.WPF.Views {
             Console.WriteLine("G" + (pixel >> 8 & 0xFF).ToString("X"));
             Console.WriteLine("B" + (pixel >> 0 & 0xFF).ToString("X"));
             Console.WriteLine();
-            
+
 
             RawImage raw = new("./Assets/wolf.png");
-            
+
             Utility.UpdateImageBox(c_ShowImgBox, raw.ToBitmap());
 
             raw.SaveFile("./test.ppm");

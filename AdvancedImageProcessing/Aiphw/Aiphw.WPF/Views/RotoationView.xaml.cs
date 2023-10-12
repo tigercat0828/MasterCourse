@@ -7,7 +7,7 @@ using System.Windows.Controls;
 namespace Aiphw.WPF.Views {
 
     public partial class RotationView : UserControl {
-        
+
         RawImage m_outputRaw;
         RawImage m_inputRaw;
         public RotationView() {
@@ -20,7 +20,7 @@ namespace Aiphw.WPF.Views {
 
         private void OpenFileBtn_Click(object sender, RoutedEventArgs e) {
 
-            OpenFileDialog dialog = new ();
+            OpenFileDialog dialog = new();
             dialog.Filter = "Image Files (*.jpg; *.jpeg; *.png; *.bmp; *.ppm)|*.jpg; *.jpeg; *.png; *.bmp; *.ppm";
             dialog.Title = "Open Image";
             if (dialog.ShowDialog() == true) {

@@ -1,17 +1,26 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
 
-namespace Aiphw.Models; 
+namespace Aiphw.Models;
 [SuppressMessage("Microsoft.Design", "CA1416:ValidatePlatformCompatibility")]
 public class RawImage {
     const int B = 0, G = 8, R = 16, A = 24;
     public int Width { get; private set; }
     public int Height { get; private set; }
-
+    public int Length => Width * Height;
     public uint[] Pixels;
+    public uint this[int i] {
+        get { return Pixels[i]; }
+        set { Pixels[i] = value; }
+    }
+    public uint this[int i, int j] {
+        get { return Pixels[j * Width + i]; }
+        set { Pixels[j * Width + i] = value; }
+    }
     public RawImage(string filename) {
         string extension = Path.GetExtension(filename);
         Bitmap bmp = null;
@@ -101,7 +110,7 @@ public class RawImage {
         }
     }
     public static uint[] GetPixels(Bitmap bitmap) {
-        
+
         int width = bitmap.Width;
         int height = bitmap.Height;
 

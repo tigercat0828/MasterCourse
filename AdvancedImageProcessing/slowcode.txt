@@ -1,0 +1,135 @@
+    public static RawImage2 SaltPepperNoise2(RawImage2 input, out RawImage2 noise, int noiseValue) {
+        Random random = new Random();
+        RawImage2 output = new RawImage2(input);
+        noise = new RawImage2(input.Width, input.Height);
+
+        Span<byte> outputPixels = output.Pixels;
+        Span<byte> noisePixels = noise.Pixels;
+
+        noiseValue /= 2;
+        for (int i = 0; i < input.Width * input.Height; i++) {
+            noisePixels[i * 4 + cB] = 128;
+            noisePixels[i * 4 + cG] = 128;
+            noisePixels[i * 4 + cR] = 128;
+            noisePixels[i * 4 + cA] = 255;
+
+            int rnd = random.Next(100);
+            if (rnd <= noiseValue) {
+                // black
+                outputPixels[i * 4 + cB] = 0;
+                outputPixels[i * 4 + cG] = 0;
+                outputPixels[i * 4 + cR] = 0;
+                outputPixels[i * 4 + cA] = 255;
+
+                noisePixels[i * 4 + cB] = 0;
+                noisePixels[i * 4 + cG] = 0;
+                noisePixels[i * 4 + cR] = 0;
+                noisePixels[i * 4 + cA] = 255;
+            }
+            else if (rnd >= 100 - noiseValue) {
+                // white
+                outputPixels[i * 4 + cB] = 255;
+                outputPixels[i * 4 + cG] = 255;
+                outputPixels[i * 4 + cR] = 255;
+                outputPixels[i * 4 + cA] = 255;
+
+                noisePixels[i * 4 + cB] = 255;
+                noisePixels[i * 4 + cG] = 255;
+                noisePixels[i * 4 + cR] = 255;
+                noisePixels[i * 4 + cA] = 255;
+            }
+        }
+        output.FinishEdit();
+        noise.FinishEdit();
+        return output;
+    }
+    
+    public static RawImage2 GaussianNoise2(RawImage2 input, out RawImage2 noise, float sigma) {
+        Random varphi = new();
+        Random gamma = new();
+
+        int width = input.Width;
+        int height = input.Height;
+        RawImage2 output = new RawImage2(width, height);
+        noise = new RawImage2(width, height);
+        for (int y = 0; y < height; y++) {
+            for (int x = 1; x < width; x += 2) {
+
+                float sqrt = MathF.Sqrt(-2.0f * MathF.Log(gamma.NextSingle()));
+                float trian = varphi.NextSingle() * 2.0f * MathF.PI;
+                float z1 = sigma * MathF.Cos(trian) * sqrt;
+                float z2 = sigma * MathF.Sin(trian) * sqrt;
+
+                byte[] noised1 = new byte[4];
+                byte[] noised2 = new byte[4];
+                byte[] pixel1 = input.GetPixel(x - 1, y);
+                byte[] pixel2 = input.GetPixel(x, y);
+
+                noised1[cB] = (byte)Math.Clamp(pixel1[cB] + z1, 0, 255);
+                noised1[cG] = (byte)Math.Clamp(pixel1[cG] + z1, 0, 255);
+                noised1[cR] = (byte)Math.Clamp(pixel1[cR] + z1, 0, 255);
+                noised1[cA] = 255;
+
+                noised2[cB] = (byte)Math.Clamp(pixel2[cB] + z2, 0, 255);
+                noised2[cG] = (byte)Math.Clamp(pixel2[cG] + z2, 0, 255);
+                noised2[cR] = (byte)Math.Clamp(pixel2[cR] + z2, 0, 255);
+                noised2[cA] = 255;
+
+                output.SetPixel(x - 1, y, noised1);
+                output.SetPixel(x, y, noised2);
+
+                byte z1b = (byte)z1;
+                byte z2b = (byte)z2;
+                noise.SetPixel(x - 1, y, new byte[] { z1b, z1b, z1b, 255 });
+                noise.SetPixel(x, y, new byte[] { z2b, z2b, z2b, 255 });
+            }
+        }
+        output.FinishEdit();
+        noise.FinishEdit();
+        return output;
+    }
+    public static RawImage GaussianNoise_ST(RawImage input, out RawImage outNoise, float sigma) {
+        Random varphi = new();
+        Random gamma = new();
+
+        int width = input.Width;
+        int height = input.Height;
+        RawImage output = new(width, height);
+        RawImage noise = new RawImage(width, height);
+        for (int y = 0; y < height; y++) {
+            for (int x = 1; x < width; x += 2) {
+
+                float sqrt = MathF.Sqrt(-2.0f * MathF.Log(gamma.NextSingle()));
+                float trian = varphi.NextSingle() * 2.0f * MathF.PI;
+                float z1 = sigma * MathF.Cos(trian) * sqrt;
+                float z2 = sigma * MathF.Sin(trian) * sqrt;
+
+                byte z1b = (byte)z1;
+                byte z2b = (byte)z2;
+
+                uint noise1 = (uint)(z1b << B | z1b << G | z1b << R | 0xFF000000);
+                uint noise2 = (uint)(z2b << B | z2b << G | z2b << R | 0xFF000000);
+                noise.SetPixel(x - 1, y, noise1);
+                noise.SetPixel(x, y, noise2);
+
+                uint p1 = input.GetPixel(x - 1, y);
+                uint p2 = input.GetPixel(x, y);
+
+                byte B1 = (byte)Math.Clamp((p1 >> B & 0xFF) + z1, 0, 255);
+                byte G1 = (byte)Math.Clamp((p1 >> G & 0xFF) + z1, 0, 255);
+                byte R1 = (byte)Math.Clamp((p1 >> R & 0xFF) + z1, 0, 255);
+
+                byte B2 = (byte)Math.Clamp((p2 >> B & 0xFF) + z2, 0, 255);
+                byte G2 = (byte)Math.Clamp((p2 >> G & 0xFF) + z2, 0, 255);
+                byte R2 = (byte)Math.Clamp((p2 >> R & 0xFF) + z2, 0, 255);
+
+                uint noised1 = (uint)(B1 << B | G1 << G | R1 << R | 0xFF000000);
+                uint noised2 = (uint)(B2 << B | G2 << G | R2 << R | 0xFF000000);
+
+                output.SetPixel(x - 1, y, noised1);
+                output.SetPixel(x, y, noised2);
+            }
+        };
+        outNoise = noise;
+        return output;
+    }

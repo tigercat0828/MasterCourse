@@ -48,7 +48,7 @@ namespace Aiphw.WPF.Views {
             c_NoiseHistogram.Render();
         }
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            
+
         }
         private void GaussianBtn_Click(object sender, RoutedEventArgs e) {
 
@@ -63,7 +63,7 @@ namespace Aiphw.WPF.Views {
         private void UpdateInputControl() {
             Utility.UpdateImageBox(c_InputImgBox, m_inputRaw.ToBitmap());
             var gray = ImageProcessing.GrayScale(m_inputRaw);
-            Utility.SetHistogramFromChannel(c_InputHistogram.Plot,gray, 0, Color.FromArgb(128, 128, 128), "Gray");
+            Utility.SetHistogramFromChannel(c_InputHistogram.Plot, gray, 0, Color.FromArgb(128, 128, 128), "Gray");
             c_InputHistogram.Render();
         }
         private void UpdateAllControls() {

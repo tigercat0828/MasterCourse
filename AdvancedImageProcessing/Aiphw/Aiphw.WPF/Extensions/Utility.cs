@@ -1,13 +1,12 @@
 ﻿using Aiphw.Models;
 using ScottPlot;
 using ScottPlot.Statistics;
-using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Media.Imaging;
 using Image = System.Windows.Controls.Image;
 
-namespace Aiphw.WPF.Extensions; 
+namespace Aiphw.WPF.Extensions;
 public static class Utility {
     public static BitmapImage BitmapToImageSource(Bitmap bitmap) {
         using (MemoryStream memory = new MemoryStream()) {

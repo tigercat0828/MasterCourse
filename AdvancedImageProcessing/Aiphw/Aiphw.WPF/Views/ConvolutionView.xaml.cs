@@ -11,14 +11,15 @@ namespace Aiphw.WPF.Views {
 
         TextBox[,] c_MaskCellTextBox = new TextBox[5, 5];
         int m_MaskSize;
-        RawImage2 m_inputRaw;
-        RawImage2 m_outputRaw;
+        RawImage m_inputRaw;
+        RawImage m_outputRaw;
         public ConvolutionView() {
             InitializeComponent();
             BuildMaskControl();
             c_SaveFileBtn.IsEnabled = false;
             c_SmoothBtn.IsEnabled = false;
             c_EdgeDetectBtn.IsEnabled = false;
+            c_ProcessBtn.IsEnabled = false;
         }
 
         private void OpenFileBtn_Click(object sender, RoutedEventArgs e) {
@@ -31,9 +32,10 @@ namespace Aiphw.WPF.Views {
                 c_SaveFileBtn.IsEnabled = true;
                 c_SmoothBtn.IsEnabled = true;
                 c_EdgeDetectBtn.IsEnabled = true;
-                RawImage2 loadRaw = new(dialog.FileName);
-                m_inputRaw = new RawImage2(loadRaw);
-                m_outputRaw = new RawImage2(loadRaw);
+                c_ProcessBtn.IsEnabled = true;
+                RawImage loadRaw = new(dialog.FileName);
+                m_inputRaw = new(loadRaw);
+                m_outputRaw = new(loadRaw);
                 Utility.UpdateImageBox(c_InputImgBox, m_inputRaw.ToBitmap());
             }
         }
@@ -52,7 +54,7 @@ namespace Aiphw.WPF.Views {
         private void ProcessBtn_Click(object sender, RoutedEventArgs e) {
             float[] rawMask = GetCustomMaskCell();
             MaskKernel kernel = new MaskKernel(rawMask);
-            m_outputRaw = ImageProcessing.ConvolutionGray(m_outputRaw, kernel);
+            m_outputRaw = ImageProcessing.ConvolutionRGB(m_inputRaw, kernel);
             Utility.UpdateImageBox(c_OutputImgBox, m_outputRaw.ToBitmap());
         }
 

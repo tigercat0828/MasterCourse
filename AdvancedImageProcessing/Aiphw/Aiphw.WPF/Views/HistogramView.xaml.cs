@@ -11,18 +11,18 @@ namespace Aiphw.WPF.Views {
     /// </summary>
     public partial class HistogramView : UserControl {
         RawImage m_outputRaw;
-        
+
         public HistogramView() {
             InitializeComponent();
             c_SaveFileBtn.IsEnabled = false;
         }
         private void OpenFileBtn_Click(object sender, RoutedEventArgs e) {
 
-            OpenFileDialog dialog = new() { 
+            OpenFileDialog dialog = new() {
                 Filter = "Image Files (*.jpg; *.jpeg; *.png; *.bmp; *.ppm)|*.jpg; *.jpeg; *.png; *.bmp; *.ppm",
                 Title = "Open Image"
             };
-            
+
             if (dialog.ShowDialog() == true) {
 
                 RawImage loadRaw = new(dialog.FileName);

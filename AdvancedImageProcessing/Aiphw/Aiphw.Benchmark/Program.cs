@@ -20,5 +20,5 @@ public class BitwiseVSarrayGray {
         RawImage image = new("./Assets/wolf.png");
         ImageProcessing.GaussianNoise_ST(image, out RawImage noise, 5);
     }
-   
+
 }
