@@ -97,6 +97,8 @@ namespace Aiphw.WPF.Views {
         }
 
         private void c_SmoothBtn_Click(object sender, RoutedEventArgs e) {
+            //RawImage grayScale = ImageProcessing.GrayScale(m_inputRaw);
+            //m_outputRaw = ImageProcessing.Smooth(grayScale);
             m_outputRaw = ImageProcessing.Smooth(m_inputRaw);
             Utility.UpdateImageBox(c_OutputImgBox, m_outputRaw.ToBitmap());
         }

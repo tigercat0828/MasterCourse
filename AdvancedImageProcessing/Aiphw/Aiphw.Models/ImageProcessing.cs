@@ -1,7 +1,9 @@
 ﻿//#define LOAD_SLOW_CODE
 
 using System;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.Intrinsics.X86;
 
 namespace Aiphw.Models;
 
@@ -78,8 +80,7 @@ public static class ImageProcessing {
         return output;
     }
     public static RawImage ConvolutionGray(RawImage input, MaskKernel kernel) {
-        int kernelSize = kernel.Size;
-        int kernelOffset = kernelSize / 2;
+        int kernelOffset = kernel.Size / 2;
         int width = input.Width;
         int height = input.Height;
         RawImage output = new(width, height);
@@ -105,8 +106,15 @@ public static class ImageProcessing {
         return output;
     }
     public static RawImage Smooth(RawImage input) {
+
         MaskKernel smoothMask = MaskKernel.LoadPreBuiltMask(DefaultMask.GaussianSmooth);
+        RawImage garyScale = GrayScale(input);
+        return ConvolutionGray(garyScale, smoothMask);
+
         return ConvolutionRGB(input, smoothMask);
+
+        
+
     }
     public static RawImage Reverse(RawImage input) {
 
@@ -125,83 +133,20 @@ public static class ImageProcessing {
     public static RawImage EdgeDetection(RawImage input) {
         // Canny Edge Detection 
         // Step 1: Smooth
-        RawImage smooth = Smooth(input);
-        RawImage grayscale = GrayScale(smooth);
+        RawImage grayscale = GrayScale(input);
+        RawImage smooth = Smooth(grayscale);
 
         // Step 2: Calculate Gradient
         MaskKernel sobelXmask = MaskKernel.LoadPreBuiltMask(DefaultMask.SobelX);
         MaskKernel sobelYmask = MaskKernel.LoadPreBuiltMask(DefaultMask.SobelY);
-        RawImage sobelXimage = ConvolutionGray(grayscale, sobelXmask);
-        RawImage sobelYimage = ConvolutionGray(grayscale, sobelYmask);
+        RawImage sobelXimage = ConvolutionGray(smooth, sobelXmask);
+        RawImage sobelYimage = ConvolutionGray(smooth, sobelYmask);
         Func<uint, uint, uint> grad = (gx, gy) => (uint)Math.Clamp(Math.Sqrt(gx * gx + gy * gy), 0, 255);
-        RawImage gradient = OverlayCalculate(sobelXimage, sobelYimage, grad);
-        // Step 3: Calculate Orientation
-        Func<uint, uint, uint> theta = (gx, gy) => {
-            double ori = 0;
-            if (gx == 0) {
-                ori = (gy == 0) ? 0.0f : 90.0f;
-            }
-            else {
-                double div = (double)gy / gx;
-                if (div < 0)
-                    ori = 180.0 - Math.Atan(-div) * RAD2DEG;
-                else
-                    ori = Math.Atan(div) * RAD2DEG;
+        
+        RawImage gradientData = OverlayCalculate(sobelXimage, sobelYimage, grad);
+       
+        return Reverse(gradientData);
 
-                if (ori < 22.5 || ori >= 337.5) ori = 0;
-                else if (ori < 67.5) ori = 45;
-                else if (ori < 112.5) ori = 90;
-                else if (ori < 157.5) ori = 135;
-                else if (ori < 202.5) ori = 180;
-                else if (ori < 247.5) ori = 225;
-                else if (ori < 292.5) ori = 270;
-                else ori = 315;
-            }
-            
-            return (uint)ori;
-            //https://www.twblogs.net/a/5b884f802b71775d1cdb91f8
-        };
-        RawImage orientation = OverlayCalculate(sobelXimage, sobelYimage, theta);
-
-        int width = input.Width;
-        int height = input.Height;
-        RawImage dis = new(width, height);
-        float leftPixel = 0, rightPixel = 0;
-        for (int y = 1; y < height - 1; y++) {
-            for (int x = 1; x < width - 1; x++) {
-                //獲得相鄰兩像素梯度值
-                switch (orientation[y * width + x]) {
-                    case 0:
-                        leftPixel = gradient[x - 1, y];
-                        rightPixel = gradient[x + 1, y];
-                        break;
-                    case 45:
-                        leftPixel = gradient[x - 1, y + 1];
-                        rightPixel = gradient[x + 1, y - 1];
-                        break;
-                    case 90:
-                        leftPixel = gradient[x, y + 1];
-                        rightPixel = gradient[x, y - 1];
-                        break;
-                    case 135:
-                        leftPixel = gradient[x + 1, y + 1];
-                        rightPixel = gradient[x - 1, y - 1];
-                        break;
-                }
-                if ((gradient[x, y] < leftPixel) || (gradient[x, y] < rightPixel)) {
-                    dis[y * width+ x] = 0;
-                }
-                else {
-                    const float MAX_GRADIENTS = 89.0f;
-                    dis[y * width+ x] = (uint)(gradient[x, y] / MAX_GRADIENTS * 255);
-
-                }
-
-            }
-        }
-        // Step 4: Nonmaximal Suppresion
-        return Reverse(gradient);
-        return Reverse(dis);
     }
     public static RawImage GrayScale(RawImage input) {
         RawImage output = new(input.Width, input.Height);
@@ -334,7 +279,20 @@ public static class ImageProcessing {
         outNoise = noise;
         return output;
     }
- 
+    public static RawImage DataToRawImage(RawImage image) {
+        RawImage output = new(image.Width, image.Height);
+        int length = output.Length;
+        Parallel.For(0, length, i => {
+
+            uint b = image[i] >> B & 0xFF;
+            uint g = image[i] >> G & 0xFF;
+            uint r = image[i] >> R & 0xFF;
+
+            output[i] = (b << B | g << G | r << R | 0xFF000000);
+        });
+
+        return output;
+    }
     public static RawImage OverlayCalculate(RawImage input1, RawImage input2, Func<uint, uint, uint> func) {
 
         if (input1.Width != input2.Width || input1.Height != input2.Height) {

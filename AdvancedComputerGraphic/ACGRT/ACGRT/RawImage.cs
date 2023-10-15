@@ -1,149 +1,146 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Color = ACGRT.Color;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Numerics;
 using System.Runtime.InteropServices;
-
 namespace ACGRT;
 
 [SuppressMessage("Microsoft.Design", "CA1416:ValidatePlatformCompatibility")]
-public class RawImage : ICloneable, IDisposable {
-    private const int B = 0;
-    private const int G = 1;
-    private const int R = 2;
-    private const int A = 3;
-
-    public const int BYTE4 = 4;
-    public Bitmap _bitmap;
-    public int Width => _bitmap.Width;
-    public int Height => _bitmap.Height;
-
-    public byte[] Pixels;
-    public RawImage() { }
+public class RawImage {
+    const int B = 0, G = 8, R = 16, A = 24;
+    public int Width { get; private set; }
+    public int Height { get; private set; }
+    public int Length => Width * Height;
+    public uint[] Pixels;
+    public uint this[int i] {
+        get { return Pixels[i]; }
+        set { Pixels[i] = value; }
+    }
+    public uint this[int i, int j] {
+        get { return Pixels[j * Width + i]; }
+        set { Pixels[j * Width + i] = value; }
+    }
     public RawImage(string filename) {
-        _bitmap = new Bitmap(filename);
-        Bitmap2Pixel();
+        string extension = Path.GetExtension(filename);
+        Bitmap bmp = null;
+        if (extension == ".ppm") {
+            bmp = PpmReadWriter.ReadPPM(filename);
+        }
+        else {
+            bmp = new Bitmap(filename);
+        }
+        Pixels = GetPixels(bmp);
+        Width = bmp.Width;
+        Height = bmp.Height;
     }
     public RawImage(RawImage other) {
-        _bitmap = other._bitmap.Clone() as Bitmap;
         Pixels = other.Pixels.ToArray();
+        Width = other.Width;
+        Height = other.Height;
     }
     public RawImage(int width, int height) {
-        _bitmap = new Bitmap(width, height);
-        Bitmap2Pixel();
+        Width = width;
+        Height = height;
+        Pixels = new uint[width * height];
     }
-    public Bitmap ToBitmap() {
-        return new Bitmap(_bitmap);
+    public RawImage(int width, int height, uint[] pixels) {
+        Width = width;
+        Height = height;
+        Pixels = pixels.ToArray();
     }
-
-    public void Update() {
-        Pixel2Bitmap();
+    public void SetPixel(int x, int y, uint pixel) {
+        int index = y * Width + x;
+        Pixels[index] = pixel;
     }
-    public void SetPixel(int x, int y, byte[] color) {
-        int index = (y * Width + x) * BYTE4;
-        Pixels[index + B] = color[0];
-        Pixels[index + G] = color[1];
-        Pixels[index + R] = color[2];
-        Pixels[index + A] = color[3];
+    public void SetPixel(int x, int y, Color color) {
+        uint pixelValue = ((uint)color.R << R) | ((uint)color.G << G) | ((uint)color.B << B) | 0xFF000000;
+        SetPixel(x, y, pixelValue);
     }
     public void SetPixel(int x, int y, Vector3 color) {
-        int index = (y * Width + x) * BYTE4;
-        Pixels[index + B] = (byte)color.Z;
-        Pixels[index + G] = (byte)color.Y;
-        Pixels[index + R] = (byte)color.X;
-        Pixels[index + A] = 255;
+        uint pixelValue = ((uint)color.X << R) | ((uint)color.Y << G) | ((uint)color.Z << B) | 0xFF000000;
+        SetPixel(x, y, pixelValue);
     }
-    public byte[] GetPixel(int x, int y) {
-        /// todo : optimize here
-        int index = (y * Width + x) * BYTE4;
-        return new byte[] {
-            Pixels[index],      // B
-            Pixels[index+1],    // G
-            Pixels[index+2],    // R
-            Pixels[index+3],    // A
-        };
+    public void SetPixel(int x, int y, float r, float g, float b) {
+        uint pixelValue = ((uint)r << R) | ((uint)g << G) | ((uint)b << B) | 0xFF000000;
+        SetPixel(x, y, pixelValue);
+    }
+    public void SetPixel(int x, int y, uint r, uint g, uint b) {
+        uint pixelValue = (r << R) | (g << G) | (b << B) | 0xFF000000;
+        SetPixel(x, y, pixelValue);
+    }
+    public uint GetPixel(int x, int y) {
+        return Pixels[y * Width + x];
+    }
+
+    public Bitmap ToBitmap() {
+
+        Bitmap bmp = new(Width, Height);
+
+        Rectangle rect = new(0, 0, Width, Height);
+
+        BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+        int numPixels = Width * Height;
+        byte[] RGBA = new byte[numPixels * 4];
+
+        Parallel.For(0, numPixels, i => {
+            int index = i * 4;
+            uint pixel = Pixels[i];
+            RGBA[index + 0] = (byte)(pixel >> B & 0xFF);  // Blue
+            RGBA[index + 1] = (byte)(pixel >> G & 0xFF);  // Green
+            RGBA[index + 2] = (byte)(pixel >> R & 0xFF);  // Red
+            RGBA[index + 3] = (byte)(pixel >> A & 0xFF);  // Alpha
+        });
+        IntPtr ptr = bmpData.Scan0;
+        Marshal.Copy(RGBA, 0, ptr, numPixels * 4);
+        bmp.UnlockBits(bmpData);
+
+        return bmp;
     }
     public void SaveFile(string filename) {
+        var bitmap = ToBitmap();
         string extension = Path.GetExtension(filename);
         switch (extension.ToLower()) {
             case ".jpg":
             case ".jpeg":
-                _bitmap.Save(filename, ImageFormat.Jpeg);
+                bitmap.Save(filename, ImageFormat.Jpeg);
                 break;
             case ".png":
-                _bitmap.Save(filename, ImageFormat.Png);
+                bitmap.Save(filename, ImageFormat.Png);
                 break;
             case ".bmp":
-                _bitmap.Save(filename, ImageFormat.Bmp);
+                bitmap.Save(filename, ImageFormat.Bmp);
                 break;
-
+            case ".ppm":
+                PpmReadWriter.WritePPM(filename, Pixels, Width, Height);
+                break;
             default:
                 Console.WriteLine("Unsupported file format.");
                 break;
         }
     }
-    public object Clone() {
-        return new RawImage() {
-            _bitmap = _bitmap.Clone() as Bitmap,
-            Pixels = Pixels.ToArray()
-        };
-    }
-    public void Dispose() {
-        _bitmap.Dispose();
-    }
-    public void FlipY() {
-        _bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
-        Bitmap2Pixel();
-    }
-    public void FlipX() {
-        _bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
-        Bitmap2Pixel();
-    }
-    private void Pixel2Bitmap() {
-        BitmapData bitmapData = _bitmap.LockBits(
-              new Rectangle(0, 0, _bitmap.Width, _bitmap.Height),
-              ImageLockMode.WriteOnly,
-              PixelFormat.Format32bppArgb
-          );
-        Marshal.Copy(Pixels, 0, bitmapData.Scan0, Pixels.Length);
-        _bitmap.UnlockBits(bitmapData);
-    }
-    public void Bitmap2Pixel() {
-        BitmapData bitmapData = _bitmap.LockBits(
-         new Rectangle(0, 0, _bitmap.Width, _bitmap.Height),
-         ImageLockMode.ReadOnly,
-         PixelFormat.Format32bppArgb
-     );
-        Pixels = new byte[bitmapData.Stride * _bitmap.Height];
-        Marshal.Copy(bitmapData.Scan0, Pixels, 0, Pixels.Length);
-        _bitmap.UnlockBits(bitmapData);
-    }
+    public static uint[] GetPixels(Bitmap bitmap) {
 
-    public void WritePPM(string filename) {
-        using (StreamWriter writer = new StreamWriter(filename)) {
-            // Write the PPM header
-            writer.WriteLine("P3");                 // P3 format for text PPM
-            writer.WriteLine($"{Width} {Height}");  // Width, height
-            writer.WriteLine("255");                // Maximum color value
+        int width = bitmap.Width;
+        int height = bitmap.Height;
 
-            for (int i = 0; i < Pixels.Length; i += RawImage.BYTE4) {
-                byte B = Pixels[i];
-                byte G = Pixels[i + 1];
-                byte R = Pixels[i + 2];
-                writer.WriteLine($"{R,3} {G,3} {B,3}");
-            }
-        }
+        BitmapData bmpData = bitmap.LockBits(
+            new Rectangle(0, 0, width, height),
+            ImageLockMode.ReadOnly,
+            PixelFormat.Format32bppArgb
+        );
+
+        int stride = bmpData.Stride;
+        int byteDataSize = stride * height;
+
+        byte[] pixelBytes = new byte[byteDataSize];
+        Marshal.Copy(bmpData.Scan0, pixelBytes, 0, byteDataSize);
+        bitmap.UnlockBits(bmpData);
+
+        uint[] pixels = new uint[byteDataSize / 4];
+        Buffer.BlockCopy(pixelBytes, 0, pixels, 0, byteDataSize);
+
+        return pixels;
     }
-    /// <summary>
-    /// optimize with span (ref struct)
-    /// </summary>
-    //public void SetPixel(int x, int y, ColorBGRA color) {
-    //    int index = (y * Width + x) * BYTE4;
-    //    color.CopyTo(Pixels.AsSpan(index));
-    //}
-    //public ColorBGRA GetPixel(int x, int y) {
-    //    / todo : optimize here
-    //    int index = (y * Width + x) * BYTE4;
-    //    return new ColorBGRA(Pixels, index, BYTE4);
-    //}
 }

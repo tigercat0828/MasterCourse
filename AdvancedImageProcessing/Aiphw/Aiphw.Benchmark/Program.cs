@@ -12,13 +12,13 @@ public class BitwiseVSarrayGray {
 
     [Benchmark]
     public void Rawimage() {
-        RawImage image = new("./Assets/wolf.png");
-        ImageProcessing.GaussianNoise(image, out RawImage noise, 5);
+        //RawImage image = new("./Assets/wolf.png");
+        //ImageProcessing.GaussianNoise(image, out RawImage noise, 5);
     }
     [Benchmark]
     public void Rawimage_MT() {
-        RawImage image = new("./Assets/wolf.png");
-        ImageProcessing.GaussianNoise_ST(image, out RawImage noise, 5);
+        //RawImage image = new("./Assets/wolf.png");
+        
     }
 
 }

@@ -77,14 +77,14 @@ public class Sphere : IHitable {
             float temp = (-b - MathF.Sqrt(d)) / a;
             if (temp < tMax && temp > tMin) {
                 record.t = temp;
-                record.hitpoint = ray.GetPoint(temp);
+                record.hitpoint = ray.At(temp);
                 record.normal = (record.hitpoint - this.origin) / radius;
                 return true;
             }
             temp = (-b + MathF.Sqrt(d)) / a;
             if (temp < tMax && temp > tMin) {
                 record.t = temp;
-                record.hitpoint = ray.GetPoint(temp);
+                record.hitpoint = ray.At(temp);
                 record.normal = (record.hitpoint - this.origin) / radius;
                 return true;
             }

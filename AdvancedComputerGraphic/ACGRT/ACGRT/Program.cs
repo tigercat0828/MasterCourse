@@ -1,69 +1,61 @@
 ﻿using ACGRT;
-using System;
 using System.Numerics;
 
 public class Program {
     // Sky
-    public static Vector3 RenderSky(Ray ray) {
-        Vector3 topColor = Vector3.One * 255;
-        Vector3 bottomColor = new Vector3(0.5f, 0.7f, 1.0f) * 255;
-        // not hit so render sky
-        Vector3 uniDirection = Vector3.Normalize(ray.direction);
-        float t = 0.5f * (uniDirection.Y + 1.0f);
-        return Vector3.Lerp(topColor, bottomColor, t);
-    }
-    static int i =0;
-    public static Vector3 RayCast(Ray ray, Scene scene) {
-        HitRecord rec;
-        float min = 0;
-        float max = float.MaxValue;
-        if (scene.Hit(ray, ref min, ref max, out rec)) {
-            //Console.WriteLine(i++);
-            Random rd = new();
-            float rnd1 = (float)rd.NextDouble() * 2.0f - 1.0f;
-            float rnd2 = (float)rd.NextDouble() * 2.0f - 1.0f;
-            float rnd3 = (float)rd.NextDouble() * 2.0f - 1.0f;
-            var target = Vector3.Normalize(rec.normal) + Vector3.Normalize(new Vector3(rnd1, rnd2, rnd3));
-
-            return 0.5f * RayCast(new Ray(rec.hitpoint, target), scene);
-        }
-        else {
-            return RenderSky(ray);
-            return Vector3.Zero;
-        }
-    }
-    // ----------------------------------
+    const int B = 0, G = 8, R = 16, A = 24;
     private static void Main(string[] args) {
 
-        #region Scene Setup
-        (Camera eye, Scene scene) = InputParser.Parse("./Assets/hw1_input.txt", out int WIDTH, out int HEIGHT);
+        // Image
+        float AspectRatio = 16.0f/ 9.0f;
+        int WIDTH = 400;
+        int HEIGHT = (int)(WIDTH / AspectRatio);
+        // Camera
+        float FocalLength = 1.0f;
+        float ViewportHeight = 2.0f;
+        float ViewportWidth =  ViewportHeight *  WIDTH / HEIGHT;
+        Vector3 CameraPosition = Vector3.Zero;
+        Vector3 ViewportU = new(ViewportWidth, 0, 0);
+        Vector3 ViewportV = new(0, -ViewportHeight, 0);
+        Vector3 deltaU = ViewportU / WIDTH;
+        Vector3 deltaV = ViewportV / HEIGHT;
 
-        RawImage raw = new RawImage(WIDTH, HEIGHT);
+        Vector3 ViewPortUpperLeft = CameraPosition - new Vector3(0, 0, FocalLength) - ViewportU / 2 - ViewportV / 2;
+        Vector3 Pixel00Loc = ViewPortUpperLeft + 0.5f * (deltaU + deltaV);
 
-        #endregion
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j <HEIGHT; j++) {
-                float u = i / (float)(WIDTH);
-                float v = j / (float)(HEIGHT);
-                Ray r = eye.GetRay(u, v);
-                Vector3 color = RayCast(r, scene);
-                raw.SetPixel(i, j, color);
+        Console.WriteLine($"{WIDTH} x {HEIGHT}");
+        RawImage output = new(WIDTH, HEIGHT);
+        for (int y = 0; y < HEIGHT; y++) {
+            Console.WriteLine($"Scanline {y,4} ...");
+            for (int x = 0; x < WIDTH; x++) {
+                Vector3 currentPixelPosition = Pixel00Loc + x * deltaU + y * deltaV;
+                Vector3 rayDirection = currentPixelPosition - CameraPosition;
+                Ray r = new(CameraPosition, rayDirection);
+                Color pixel = 255*RayCast(r);
+                output.SetPixel(x, y,pixel);
             }
         }
-        raw.Update();
-
-        Console.WriteLine("Rendering Complete");
-
-        Console.WriteLine("Write File ...");
-
-        raw.FlipY();
-        raw.WritePPM("hw1_output.ppm");
-        raw.SaveFile("hw1_output.png");
-
+        output.SaveFile("Hello.png");
         Console.WriteLine("Done");
     }
+    private static Color RayCast(Ray r) {
+        if(HitSphere(new Vector3(0,0,-1.0f), 0.5f, r)){
+            return new Color(1, 0, 0);
+        }
+        return new Color(1,1,1);
+        Vector3 uniDir = Vector3.Normalize(r.direction);
+        float a = 0.5f * (uniDir.Y + 1.0f);
+        return (1.0f - a) * new Color(1.0f, 1.0f, 1.0f) + a * new Color(0.5f, 0.7f, 1.0f);
+    }
+    static bool HitSphere(Vector3 center, float radius, Ray r) {
+        Vector3 oc = r.origin - center;
+        float a = Vector3.Dot(r.direction, r.direction);
+        float b =2.0f* Vector3.Dot(r.direction, oc);
+        float c = Vector3.Dot(oc, oc) - radius * radius;
+        float discriminant = b*b-4*a*c;
+        return discriminant >= 0;
+    }
 }
-
 /*
  Default Scene
 int WIDTH = 1280;
