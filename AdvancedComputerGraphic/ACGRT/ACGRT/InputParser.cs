@@ -36,8 +36,9 @@ public static class InputParser {
                     Triangle triangle = new Triangle(
                         new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3])),
                         new Vector3(float.Parse(tokens[4]), float.Parse(tokens[5]), float.Parse(tokens[6])),
-                        new Vector3(float.Parse(tokens[7]), float.Parse(tokens[8]), float.Parse(tokens[9]))
-                    );
+                        new Vector3(float.Parse(tokens[7]), float.Parse(tokens[8]), float.Parse(tokens[9])),
+                        new Lambertian(new Color())
+                    ) ;
                     Console.WriteLine($"T {triangle.pos1}, {triangle.pos2}, {triangle.pos3}");
                     scene.Items.Add(triangle);
                     break;

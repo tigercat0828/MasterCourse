@@ -1,7 +1,9 @@
-﻿using System.Numerics;
+﻿using System.ComponentModel;
+using System.Numerics;
 
 namespace ACGRT {
     public class Camera {
+        const float DEG2RAD = 0.0174532925f;
         private readonly Random random = new();
         public float AspectRatio { get; private set; } = 1.0f;
         public int ImageWidth { get; private set; } = 100;
@@ -9,14 +11,19 @@ namespace ACGRT {
         public int ImageHeight { get; private set; } = 100;
         public Vector3 Position { get; private set; }
         public int MaxDepth { get; private set; } = 10;
-
+        public float vFOV { get; private set; } = 90f; // field of view
+        public Vector3 LookFrom = new (0, 0, -1);
+        public Vector3 LootAt = new (0, 0, 0);
+        public Vector3 Vup = new(0,1,0);
         public Vector3 Pixel00Loc { get; private set; }
         private Vector3 deltaU;
         private Vector3 deltaV;
+        private Vector3 U, V, W;
       
         public void SetAspectRatio(float ratio) => AspectRatio = ratio;
         public void SetImageWidth(int width) => ImageWidth = width;
         public void SetSampleNum(int sample) => SampleNum = sample;
+        public void SetFOV(float fov) => vFOV = fov;
         public void Render(Scene world, string filename) {
             Console.WriteLine($"Size : {ImageWidth} x {ImageHeight} Sample : {SampleNum}");
             RawImage output = new(ImageWidth, ImageHeight);
@@ -55,18 +62,26 @@ namespace ACGRT {
         }
         public void Initialize() {
             ImageHeight = (int)(ImageWidth / AspectRatio);
-            Position = new Vector3(0, 0, 0);
+            ImageHeight = (ImageHeight < 1) ? 1 : ImageHeight;
+            Position = LookFrom;
             // Camera
-            float FocalLength = 1.0f;
-            float ViewportHeight = 2.0f;
-            float ViewportWidth = ViewportHeight * ImageWidth / ImageHeight;
-            Vector3 CameraPosition = Vector3.Zero;
-            Vector3 ViewportU = new(ViewportWidth, 0, 0);
-            Vector3 ViewportV = new(0, -ViewportHeight, 0);
+            float FocalLength = (LookFrom-LootAt).Length();
+            float theta = vFOV * DEG2RAD;
+            float h = MathF.Tan(theta / 2);
+            //  float h = MathF.Tan(theta / 2); YFLIP
+            float ViewportHeight = 2.0f * h * FocalLength;
+            float ViewportWidth = ViewportHeight * (ImageWidth / (float)ImageHeight);
+            W = Vector3.Normalize(LookFrom - LootAt);
+            U = Vector3.Normalize(Vector3.Cross(Vup, W));
+            V = Vector3.Cross(W, U);    
+ 
+
+            Vector3 ViewportU = ViewportWidth * U;
+            Vector3 ViewportV = ViewportHeight * -V;
             deltaU = ViewportU / ImageWidth;
             deltaV = ViewportV / ImageHeight;
 
-            Vector3 ViewPortUpperLeft = CameraPosition - new Vector3(0, 0, FocalLength) - ViewportU / 2 - ViewportV / 2;
+            Vector3 ViewPortUpperLeft = Position - (FocalLength * W) - ViewportU / 2 - ViewportV / 2;
             Pixel00Loc = ViewPortUpperLeft + 0.5f * (deltaU + deltaV);
         }
         public Color RayCast(Ray ray, Scene world, int depth) {

@@ -15,9 +15,18 @@ public class Program {
         world.AddItem(new Sphere(new Vector3(0, 0, -1), 0.5f, M_CenterBall));
         world.AddItem(new Sphere(new Vector3(0, -100.5f, -1), 100f, M_Ground));
         world.AddItem(new Sphere(new Vector3(1.0f, 0.0f, -1.0f), 0.5f, M_RightBall));
+        //float R = MathF.Cos(MathF.PI / 4);
+        //Material left = new Lambertian(new Color(0, 0, 1f));
+        //Material right = new Lambertian(new Color(1, 0, 0));
+        //world.AddItem(new Sphere(new Vector3(-R, 0.0f, -1.0f), R, left));
+        //world.AddItem(new Sphere(new Vector3(R, 0.0f, -1.0f), R, right));
         Camera cam = new();
         cam.SetAspectRatio(16 / 9.0f);
-        cam.SetImageWidth(1920);
+        cam.SetImageWidth(800);
+        cam.SetFOV(50);
+        cam.LookFrom=new Vector3(-2, 2, 1);
+        cam.LootAt = new Vector3(0,0,-1);
+        cam.Vup = Vector3.UnitY;
         cam.Initialize();
 
 
@@ -32,7 +41,7 @@ public class Program {
         TimeSpan elapsedTime = stopwatch.Elapsed;
         Console.WriteLine($"Time : {elapsedTime.TotalSeconds:F2}");
         stopwatch.Reset();
-        Console.Beep();
+        //Console.Beep();
 
     }
 

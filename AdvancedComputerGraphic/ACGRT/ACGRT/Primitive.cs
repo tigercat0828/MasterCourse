@@ -5,10 +5,12 @@ public class Triangle : IHitable {
     public Vector3 pos2 { get; }
     public Vector3 pos3 { get; }
     public Vector3 normal { get; private set; }
+    public Material Material { get; private set; }
     public float area2;
     private const float ERROR = 0.0001f;
-    public Triangle(Vector3 pos1, Vector3 pos2, Vector3 pos3) {
+    public Triangle(Vector3 pos1, Vector3 pos2, Vector3 pos3, Material material) {
 
+        Material = material;
         this.pos1 = pos1;
         this.pos2 = pos2;
         this.pos3 = pos3;
@@ -54,12 +56,10 @@ public class Triangle : IHitable {
         record.HitPoint = P;
         record.t = t;
         record.Normal = normal;
+        record.Material = Material;
         return true;
     }
 
-    public bool Hit(ref Ray r, float tMin, float tMax, ref HitRecord record) {
-        throw new NotImplementedException();
-    }
 }
 public class Sphere : IHitable {
     public Vector3 Center { get; private set; }
