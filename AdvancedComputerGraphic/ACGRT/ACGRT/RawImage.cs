@@ -61,9 +61,9 @@ public class RawImage {
     public void SetPixel(int x, int y, Color color, int sampleNum) {    // sample per pixel
         float scale = 1.0f / sampleNum;
         Interval intensity = new(0.000f, 0.999f);
-        float r = 255.999f * intensity.Clamp(color.R * scale);
-        float g = 255.999f * intensity.Clamp(color.G * scale);
-        float b = 255.999f * intensity.Clamp(color.B * scale);
+        float r = 255.999f * intensity.Clamp(MathF.Sqrt(color.R * scale));
+        float g = 255.999f * intensity.Clamp(MathF.Sqrt(color.G * scale));
+        float b = 255.999f * intensity.Clamp(MathF.Sqrt(color.B * scale));
 
         uint pixelValue = ((uint)r << R) | ((uint)g << G) | ((uint)b << B) | 0xFF000000;
         SetPixel(x, y, pixelValue);
