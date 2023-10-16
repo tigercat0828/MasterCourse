@@ -20,18 +20,18 @@ public static class InputParser {
 
             switch (type) {
 
-                case "S":
-                    Sphere sphere = new Sphere(
-                        new Vector3(
-                            float.Parse(tokens[1]),
-                            float.Parse(tokens[2]),
-                            float.Parse(tokens[3])
-                        ),
-                        float.Parse(tokens[4])
-                    );
-                    Console.WriteLine($"S {sphere.Center}, {sphere.Radius}");
-                    scene.Items.Add(sphere);
-                    break;
+                //case "S":
+                //    Sphere sphere = new Sphere(
+                //        new Vector3(
+                //            float.Parse(tokens[1]),
+                //            float.Parse(tokens[2]),
+                //            float.Parse(tokens[3])
+                //        ),
+                //        float.Parse(tokens[4])
+                //    );
+                //    Console.WriteLine($"S {sphere.Center}, {sphere.Radius}");
+                //    scene.Items.Add(sphere);
+                //    break;
                 case "T":
                     Triangle triangle = new Triangle(
                         new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3])),

@@ -15,7 +15,7 @@ public class Scene {
         foreach (var item in Items) {
             if (item.Hit(ray, new Interval(interval.Min, currentCloset), ref tempRec)) {
                 hitAny = true;
-                currentCloset = record.t;
+                currentCloset = tempRec.t;
                 record = tempRec;
             }
         }

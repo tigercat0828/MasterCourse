@@ -7,8 +7,9 @@ public struct HitRecord {
     public Vector3 HitPoint;
     public Vector3 Normal;
     public bool IsFrontFace;
+    public Material Material;
     public void SetNormalFace(Ray ray, Vector3 outwardNormal) {
-        IsFrontFace = Vector3.Dot(ray.direction, outwardNormal) < 0;
+        IsFrontFace = Vector3.Dot(ray.Direction, outwardNormal) < 0;
         Normal = IsFrontFace ? outwardNormal : -outwardNormal;
     }
 }

@@ -76,12 +76,14 @@ namespace ACGRT {
 
             if (depth <= 0) return Color.None;
             if (world.Hit(ray, interval, ref record)) {
-                //Vector3 direction = random.UnitHemisphere(record.Normal);
-                Vector3 direction = record.Normal + random.UnitVector();    // Lambertian Distribution
-                return 0.5f * RayCast(new Ray(record.HitPoint, direction), world, depth-1);
+                if(record.Material.Scatter(ray, record, out Color attenuation, out Ray scattered)) {
+                    return attenuation * RayCast(scattered, world, depth - 1);
+                }
+
+                return Color.None;
             }
             // sky
-            Vector3 uniDir = Vector3.Normalize(ray.direction);
+            Vector3 uniDir = Vector3.Normalize(ray.Direction);
             float a = 0.5f * (uniDir.Y + 1.0f);
             return (1.0f - a) * new Color(1.0f, 1.0f, 1.0f) + a * new Color(0.5f, 0.7f, 1.0f);
         }

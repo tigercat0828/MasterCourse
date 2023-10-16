@@ -18,6 +18,9 @@ public struct Color {
     public static Color operator +(Color lhs, Color rhs) {
         return new Color(lhs.R + rhs.R, lhs.G + rhs.G, lhs.B + rhs.B);
     }
+    public static Color operator * (Color lhs, Color rhs) {
+        return new Color(lhs.R * rhs.R, lhs.G * rhs.G, lhs.B * rhs.B);
+    }
     public static Color operator *(float scalar, Color color) {
         return new Color(scalar * color.R, scalar * color.G, scalar * color.B);
     }

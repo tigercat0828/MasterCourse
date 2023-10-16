@@ -23,7 +23,7 @@ public class Triangle : IHitable {
         record = new();
 
         // if parallel -> return
-        float normalDotRay = Vector3.Dot(normal, ray.direction);
+        float normalDotRay = Vector3.Dot(normal, ray.Direction);
         if (MathF.Abs(normalDotRay) < ERROR) return false;
 
         float d = -Vector3.Dot(normal, pos1);
@@ -33,7 +33,7 @@ public class Triangle : IHitable {
         if (t < 0) return false;
 
         // intersection with the "plane"
-        Vector3 P = ray.origin + t * ray.direction;
+        Vector3 P = ray.origin + t * ray.Direction;
 
         // test whether inside
         Vector3 edgeA = pos2 - pos1;
@@ -64,15 +64,17 @@ public class Triangle : IHitable {
 public class Sphere : IHitable {
     public Vector3 Center { get; private set; }
     public float Radius { get; private set; }
-    public Sphere(Vector3 center, float radius) {
+    public Material Material { get;  set; }
+    public Sphere(Vector3 center, float radius, Material material) {
         Center = center;
         Radius = radius;
+        Material = material;
     }
 
     public bool Hit(Ray ray, Interval interval, ref HitRecord record) {
         Vector3 oc = ray.origin - Center;
-        float a = ray.direction.LengthSquared();
-        float halfb = Vector3.Dot(ray.direction, oc);
+        float a = ray.Direction.LengthSquared();
+        float halfb = Vector3.Dot(ray.Direction, oc);
         float c = oc.LengthSquared() - Radius * Radius;
         float discriminant = halfb * halfb - a * c;
         if (discriminant < 0) return false;
@@ -85,6 +87,7 @@ public class Sphere : IHitable {
         record.t = root;
         record.HitPoint = ray.At(root);
         Vector3 outwardNormal = (record.HitPoint - Center) / Radius;
+        record.Material = Material;
         record.SetNormalFace(ray, outwardNormal);
 
         return true;
