@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Net.Security;
+
 namespace ACGRT;
 
 [SuppressMessage("Microsoft.Design", "CA1416:ValidatePlatformCompatibility")]
@@ -53,25 +55,23 @@ public class RawImage {
         int index = y * Width + x;
         Pixels[index] = pixel;
     }
+
     public void SetPixel(int x, int y, Color color) {
         uint pixelValue = ((uint)color.R << R) | ((uint)color.G << G) | ((uint)color.B << B) | 0xFF000000;
         SetPixel(x, y, pixelValue);
     }
-    public void SetPixel(int x, int y, Vector3 color) {
-        uint pixelValue = ((uint)color.X << R) | ((uint)color.Y << G) | ((uint)color.Z << B) | 0xFF000000;
-        SetPixel(x, y, pixelValue);
-    }
-    public void SetPixel(int x, int y, float r, float g, float b) {
+    public void SetPixel(int x, int y, Color color, int sampleNum) {    // sample per pixel
+        float scale = 1.0f / sampleNum;
+        Interval intensity = new(0.000f, 0.999f);
+        float r = 255*intensity.Clamp(color.R * scale) ;
+        float g = 255*intensity.Clamp(color.G * scale);
+        float b = 255*intensity.Clamp(color.B * scale);
+
         uint pixelValue = ((uint)r << R) | ((uint)g << G) | ((uint)b << B) | 0xFF000000;
         SetPixel(x, y, pixelValue);
     }
-    public void SetPixel(int x, int y, uint r, uint g, uint b) {
-        uint pixelValue = (r << R) | (g << G) | (b << B) | 0xFF000000;
-        SetPixel(x, y, pixelValue);
-    }
-    public uint GetPixel(int x, int y) {
-        return Pixels[y * Width + x];
-    }
+
+
 
     public Bitmap ToBitmap() {
 
@@ -142,5 +142,21 @@ public class RawImage {
         Buffer.BlockCopy(pixelBytes, 0, pixels, 0, byteDataSize);
 
         return pixels;
+    }
+
+    public void SetPixel(int x, int y, Vector3 color) {
+        uint pixelValue = ((uint)color.X << R) | ((uint)color.Y << G) | ((uint)color.Z << B) | 0xFF000000;
+        SetPixel(x, y, pixelValue);
+    }
+    public void SetPixel(int x, int y, float r, float g, float b) {
+        uint pixelValue = ((uint)r << R) | ((uint)g << G) | ((uint)b << B) | 0xFF000000;
+        SetPixel(x, y, pixelValue);
+    }
+    public void SetPixel(int x, int y, uint r, uint g, uint b) {
+        uint pixelValue = (r << R) | (g << G) | (b << B) | 0xFF000000;
+        SetPixel(x, y, pixelValue);
+    }
+    public uint GetPixel(int x, int y) {
+        return Pixels[y * Width + x];
     }
 }

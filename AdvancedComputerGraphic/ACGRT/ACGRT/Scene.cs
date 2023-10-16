@@ -6,18 +6,17 @@ public class Scene {
     public void AddItem(IHitable item) {
         Items.Add(item);
     }
-    public bool Hit(Ray ray, ref float tMin, ref float tMax, out HitRecord record) {
+    public bool Hit(Ray ray,  Interval interval, ref HitRecord record) {
         // traverse all the item the scene hold
-        HitRecord tempRec = new();
-        record = tempRec;
+        HitRecord tempRec = new ();
         bool hitAny = false;
-        float currentCloset = tMax;
+        float currentCloset = interval.Max;
 
         foreach (var item in Items) {
-            if (item.Hit(ray, ref tMin, ref currentCloset, out tempRec)) {
+            if (item.Hit(ray,  new Interval(interval.Min, currentCloset), ref tempRec)) {
                 hitAny = true;
-                currentCloset = tempRec.t;
-                record = tempRec;
+                currentCloset = record.t;
+                record =tempRec;
             }
         }
         return hitAny;

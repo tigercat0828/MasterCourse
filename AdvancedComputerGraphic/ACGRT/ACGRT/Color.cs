@@ -1,4 +1,6 @@
-﻿namespace ACGRT;
+﻿using System.Numerics;
+
+namespace ACGRT;
 public struct Color {
     public float R;
     public float G;
@@ -7,6 +9,11 @@ public struct Color {
         R = r;
         G = g;
         B = b;
+    }
+    public Color(Vector3 vec) {
+        R = vec.X;
+        G = vec.Y;
+        B = vec.Z;
     }
     public static Color operator +(Color lhs, Color rhs) {
         return new Color(lhs.R + rhs.R, lhs.G + rhs.G, lhs.B + rhs.B);

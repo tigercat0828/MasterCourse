@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Net.Http.Headers;
+using System.Numerics;
 namespace ACGRT;
 public class Triangle : IHitable {
     public Vector3 pos1 { get; }
@@ -19,7 +20,7 @@ public class Triangle : IHitable {
         area2 = normal.Length();
     }
 
-    public bool Hit(Ray ray, ref float t_min, ref float t_max, out HitRecord record) {
+    public bool Hit(Ray ray, Interval interval, ref HitRecord record) {
         record = new();
 
         // if parallel -> return
@@ -51,44 +52,42 @@ public class Triangle : IHitable {
         C = Vector3.Cross(edgeC, vp2);
         if (Vector3.Dot(normal, C) < 0) return false;
 
-        record.hitpoint = P;
+        record.HitPoint = P;
         record.t = t;
-        record.normal = normal;
+        record.Normal = normal;
         return true; 
+    }
+
+    public bool Hit(ref Ray r, float tMin, float tMax, ref HitRecord record) {
+        throw new NotImplementedException();
     }
 }
 public class Sphere : IHitable {
-    public Vector3 origin;
-    public float radius;
-    public Sphere(Vector3 origin, float radius) {
-        this.origin = origin;
-        this.radius = radius;
+    public Vector3 Center { get; private set; }
+    public float Radius { get; private set; }
+    public Sphere(Vector3 center, float radius) {
+        Center = center;
+        Radius = radius;
     }
-    public bool Hit(Ray ray, ref float tMin, ref float tMax, out HitRecord record) {
-        record = new HitRecord();
-        Vector3 oc = ray.origin - this.origin;
-        float a = Vector3.Dot(ray.direction, ray.direction);
-        float b = Vector3.Dot(oc, ray.direction);
-        float c = Vector3.Dot(oc, oc) - radius * radius;
-        float d = b * b - a * c;
-        // 0, 1, 2 roots
-        if (d > 0) {
 
-            float temp = (-b - MathF.Sqrt(d)) / a;
-            if (temp < tMax && temp > tMin) {
-                record.t = temp;
-                record.hitpoint = ray.At(temp);
-                record.normal = (record.hitpoint - this.origin) / radius;
-                return true;
-            }
-            temp = (-b + MathF.Sqrt(d)) / a;
-            if (temp < tMax && temp > tMin) {
-                record.t = temp;
-                record.hitpoint = ray.At(temp);
-                record.normal = (record.hitpoint - this.origin) / radius;
-                return true;
-            }
+    public bool Hit(Ray ray, Interval interval, ref HitRecord record) {
+        Vector3 oc = ray.origin - Center;
+        float a = ray.direction.LengthSquared();
+        float halfb = Vector3.Dot(ray.direction, oc);
+        float c = oc.LengthSquared() - Radius * Radius;
+        float discriminant = halfb * halfb - a * c;
+        if (discriminant < 0) return false;
+        float sqrtDis = MathF.Sqrt(discriminant);
+        float root = (-halfb - sqrtDis) / a;
+        if (!interval.Surrounds(root)) {
+            root = (-halfb + sqrtDis) / a;
+            if (!interval.Surrounds(root)) return false;
         }
-        return false;
+        record.t = root;
+        record.HitPoint = ray.At(root);
+        Vector3 outwardNormal = (record.HitPoint - Center) / Radius;
+        record.SetNormalFace(ray, outwardNormal);
+
+        return true;
     }
 }

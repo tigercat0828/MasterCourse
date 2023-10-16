@@ -2,11 +2,11 @@
 
 namespace ACGRT;
 public static class InputParser {
-    public static (Camera, Scene) Parse(string filename, out int Width, out int Height) {
+    public static (Cam, Scene) Parse(string filename, out int Width, out int Height) {
         Width = 0; Height = 0;
 
         Scene scene = new Scene();
-        Camera camera = new Camera();
+        Cam camera = new Cam();
 
         // Parse the input lines
         string[] textLines = File.ReadAllLines(filename);
@@ -29,7 +29,7 @@ public static class InputParser {
                         ),
                         float.Parse(tokens[4])
                     );
-                    Console.WriteLine($"S {sphere.origin}, {sphere.radius}");
+                    Console.WriteLine($"S {sphere.Center}, {sphere.Radius}");
                     scene.Items.Add(sphere);
                     break;
                 case "T":
