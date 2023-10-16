@@ -2,12 +2,11 @@
 
 namespace ACGRT;
 public static class InputParser {
-    public static (Cam, Scene) Parse(string filename, out int Width, out int Height) {
-        Width = 0; Height = 0;
+    public static (Camera, Scene) Parse(string filename) {
 
-        Scene scene = new Scene();
-        Cam camera = new Cam();
-
+        Scene scene = new();
+        Camera camera = new();
+        Material currentMaterial = new PhongMat();
         // Parse the input lines
         string[] textLines = File.ReadAllLines(filename);
         foreach (string line in textLines) {
@@ -19,46 +18,59 @@ public static class InputParser {
             string type = tokens[0];
 
             switch (type) {
+                case "M":
+                    currentMaterial = new PhongMat(
+                        new Color(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3])),
+                        float.Parse(tokens[4]), float.Parse(tokens[5]), float.Parse(tokens[6]),
+                        float.Parse(tokens[7]), float.Parse(tokens[8]));
 
-                //case "S":
-                //    Sphere sphere = new Sphere(
-                //        new Vector3(
-                //            float.Parse(tokens[1]),
-                //            float.Parse(tokens[2]),
-                //            float.Parse(tokens[3])
-                //        ),
-                //        float.Parse(tokens[4])
-                //    );
-                //    Console.WriteLine($"S {sphere.Center}, {sphere.Radius}");
-                //    scene.Items.Add(sphere);
-                //    break;
+                    break;
+                case "S":
+                    Sphere sphere = new Sphere(
+                        new Vector3(
+                            float.Parse(tokens[1]),
+                            float.Parse(tokens[2]),
+                            float.Parse(tokens[3])
+                        ),
+                        float.Parse(tokens[4]),
+                        currentMaterial
+                    );
+                    Console.WriteLine($"S {sphere.Center}, {sphere.Radius}");
+                    scene.Items.Add(sphere);
+                    break;
                 case "T":
-                    Triangle triangle = new Triangle(
+                    Triangle triangle = new(
                         new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3])),
                         new Vector3(float.Parse(tokens[4]), float.Parse(tokens[5]), float.Parse(tokens[6])),
                         new Vector3(float.Parse(tokens[7]), float.Parse(tokens[8]), float.Parse(tokens[9])),
-                        new Lambertian(new Color())
-                    ) ;
+                        currentMaterial
+                    );
                     Console.WriteLine($"T {triangle.pos1}, {triangle.pos2}, {triangle.pos3}");
                     scene.Items.Add(triangle);
                     break;
                 case "E":
-                    camera.SetOrigin(new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3])));
-                    Console.WriteLine($"E {camera.origin}");
+                    camera.SetPosition(new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3])));
+                    Console.WriteLine($"E {camera.Position}");
                     break;
-                case "O":
-                    Vector3 UL = new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3]));
-                    Vector3 UR = new Vector3(float.Parse(tokens[4]), float.Parse(tokens[5]), float.Parse(tokens[6]));
-                    Vector3 LL = new Vector3(float.Parse(tokens[7]), float.Parse(tokens[8]), float.Parse(tokens[9]));
-                    Vector3 LR = new Vector3(float.Parse(tokens[10]), float.Parse(tokens[11]), float.Parse(tokens[12]));
-                    camera.Configure(UL, UR, LL, LR);
-                    Console.WriteLine($"O {UL}, {UR}, {LL}, {LR}");
+                case "F":
+                    camera.SetFOV(float.Parse(tokens[1]));
+                    Console.WriteLine($"FOV = {camera.vFOV}");
                     break;
                 case "R":
-                    Width = int.Parse(tokens[1]);
-                    Height = int.Parse(tokens[2]);
-
-                    Console.WriteLine($"R {Width} x {Height}");
+                    int Width = int.Parse(tokens[1]);
+                    int Height = int.Parse(tokens[2]);
+                    camera.SetImageSize(Width, Height);
+                    Console.WriteLine($"R {camera.ImageWidth} x {camera.ImageHeight}");
+                    break;
+                case "V":
+                    Vector3 viewDirection = new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3]));
+                    Vector3 cameraUp = new Vector3(float.Parse(tokens[4]), float.Parse(tokens[5]), float.Parse(tokens[6]));
+                    camera.LookAt = camera.Position + viewDirection;
+                    // up as default
+                    break;
+                case "L":
+                    Vector3 lightPos = new(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3]));
+                    Console.WriteLine(lightPos);
                     break;
                 default:
                     Console.WriteLine("Unknown input type: " + type);

@@ -18,17 +18,19 @@ public struct Color {
     public static Color operator +(Color lhs, Color rhs) {
         return new Color(lhs.R + rhs.R, lhs.G + rhs.G, lhs.B + rhs.B);
     }
-    public static Color operator * (Color lhs, Color rhs) {
+    public static Color operator *(Color lhs, Color rhs) {
         return new Color(lhs.R * rhs.R, lhs.G * rhs.G, lhs.B * rhs.B);
     }
     public static Color operator *(float scalar, Color color) {
         return new Color(scalar * color.R, scalar * color.G, scalar * color.B);
     }
-    public static readonly Color Black = new Color(0, 0, 0);
-    public static readonly Color White = new Color(1, 1, 1);
-    public static readonly Color None = new Color(0, 0, 0);
+    public static readonly Color Black = new(0, 0, 0);
+    public static readonly Color White = new(1, 1, 1);
+    public static readonly Color None = new(0, 0, 0);
 
-
+    public override string ToString() {
+        return $"<{R,2}, {G,2}, {B,2}>";
+    }
 }
 /*
  Default Scene

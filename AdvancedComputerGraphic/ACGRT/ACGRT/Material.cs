@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
-namespace ACGRT; 
+namespace ACGRT;
 public abstract class Material {
-    public abstract bool Scatter(Ray ray, HitRecord record, out Color attenuation, out Ray scattered );
+    public abstract bool Scatter(Ray ray, HitRecord record, out Color attenuation, out Ray scattered);
 }
 public class Lambertian : Material {
-    static Random Random = new Random();
+    static readonly Random Random = new();
     private Color Albedo;
 
     public Lambertian(Color albedo) {
@@ -44,8 +37,31 @@ public class PhongMat : Material {
     public Color Albedo { get; set; }
     public float Ka;
     public float Kd;
-    public float kspecular;
+    public float Ks;
+    public float Exponent;
+    public float Reflexive;
+    // light here maybe
+    public PhongMat() {
+
+    }
+    public PhongMat(Color albedo, float ka, float kd, float ks, float exponent, float reflexive) {
+        Albedo = albedo;
+        Ka = ka;
+        Kd = kd;
+        Ks = ks;
+        Exponent = exponent;
+        Reflexive = reflexive;
+
+    }
+
     public override bool Scatter(Ray ray, HitRecord record, out Color attenuation, out Ray scattered) {
-        throw new NotImplementedException();
+        attenuation = Albedo;
+        scattered = new Ray();
+        return true;
+        // phong modeling here
+    }
+
+    public override string ToString() {
+        return $"{Albedo}, {Ka}, {Kd}, {Ks}, {Exponent}, {Reflexive}";
     }
 }

@@ -29,13 +29,13 @@ public class Triangle : IHitable {
         if (MathF.Abs(normalDotRay) < ERROR) return false;
 
         float d = -Vector3.Dot(normal, pos1);
-        float t = -(Vector3.Dot(normal, ray.origin) + d) / normalDotRay;
+        float t = -(Vector3.Dot(normal, ray.Origin) + d) / normalDotRay;
 
         // check whether the triangle is behind the eye
         if (t < 0) return false;
 
         // intersection with the "plane"
-        Vector3 P = ray.origin + t * ray.Direction;
+        Vector3 P = ray.Origin + t * ray.Direction;
 
         // test whether inside
         Vector3 edgeA = pos2 - pos1;
@@ -64,7 +64,7 @@ public class Triangle : IHitable {
 public class Sphere : IHitable {
     public Vector3 Center { get; private set; }
     public float Radius { get; private set; }
-    public Material Material { get;  set; }
+    public Material Material { get; set; }
     public Sphere(Vector3 center, float radius, Material material) {
         Center = center;
         Radius = radius;
@@ -72,7 +72,7 @@ public class Sphere : IHitable {
     }
 
     public bool Hit(Ray ray, Interval interval, ref HitRecord record) {
-        Vector3 oc = ray.origin - Center;
+        Vector3 oc = ray.Origin - Center;
         float a = ray.Direction.LengthSquared();
         float halfb = Vector3.Dot(ray.Direction, oc);
         float c = oc.LengthSquared() - Radius * Radius;
