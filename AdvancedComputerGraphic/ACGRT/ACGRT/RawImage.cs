@@ -1,10 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Color = ACGRT.Color;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Net.Security;
 
 namespace ACGRT;
 
@@ -63,9 +61,9 @@ public class RawImage {
     public void SetPixel(int x, int y, Color color, int sampleNum) {    // sample per pixel
         float scale = 1.0f / sampleNum;
         Interval intensity = new(0.000f, 0.999f);
-        float r = 255*intensity.Clamp(color.R * scale) ;
-        float g = 255*intensity.Clamp(color.G * scale);
-        float b = 255*intensity.Clamp(color.B * scale);
+        float r = 255.999f * intensity.Clamp(color.R * scale);
+        float g = 255.999f * intensity.Clamp(color.G * scale);
+        float b = 255.999f * intensity.Clamp(color.B * scale);
 
         uint pixelValue = ((uint)r << R) | ((uint)g << G) | ((uint)b << B) | 0xFF000000;
         SetPixel(x, y, pixelValue);

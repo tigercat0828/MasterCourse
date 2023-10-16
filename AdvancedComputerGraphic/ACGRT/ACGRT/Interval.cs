@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ACGRT; 
+﻿namespace ACGRT;
 public struct Interval {
     public float Min;
     public float Max;
@@ -15,8 +9,7 @@ public struct Interval {
         Min = min;
         Max = max;
     }
-    public Interval()
-    {
+    public Interval() {
         Min = float.MinValue;
         Max = float.MaxValue;
     }

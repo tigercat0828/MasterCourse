@@ -21,6 +21,11 @@ public struct Color {
     public static Color operator *(float scalar, Color color) {
         return new Color(scalar * color.R, scalar * color.G, scalar * color.B);
     }
+    public static readonly Color Black = new Color(0, 0, 0);
+    public static readonly Color White = new Color(1, 1, 1);
+    public static readonly Color None = new Color(0, 0, 0);
+
+
 }
 /*
  Default Scene

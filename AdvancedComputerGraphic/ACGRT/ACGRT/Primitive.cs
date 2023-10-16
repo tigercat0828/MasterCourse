@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Numerics;
+﻿using System.Numerics;
 namespace ACGRT;
 public class Triangle : IHitable {
     public Vector3 pos1 { get; }
@@ -16,7 +15,7 @@ public class Triangle : IHitable {
         // pre-computed
         Vector3 v0_v1 = pos3 - pos1;
         Vector3 v0_v2 = pos3 - pos2;
-        normal = Vector3.Cross( v0_v2,v0_v1);
+        normal = Vector3.Cross(v0_v2, v0_v1);
         area2 = normal.Length();
     }
 
@@ -29,9 +28,9 @@ public class Triangle : IHitable {
 
         float d = -Vector3.Dot(normal, pos1);
         float t = -(Vector3.Dot(normal, ray.origin) + d) / normalDotRay;
-        
+
         // check whether the triangle is behind the eye
-        if (t < 0) return false; 
+        if (t < 0) return false;
 
         // intersection with the "plane"
         Vector3 P = ray.origin + t * ray.direction;
@@ -41,7 +40,7 @@ public class Triangle : IHitable {
         Vector3 vp0 = P - pos1;
         Vector3 C = Vector3.Cross(edgeA, vp0);
         if (Vector3.Dot(normal, C) < 0) return false;
-        
+
         Vector3 edgeB = pos3 - pos2;
         Vector3 vp1 = P - pos2;
         C = Vector3.Cross(edgeB, vp1);
@@ -55,7 +54,7 @@ public class Triangle : IHitable {
         record.HitPoint = P;
         record.t = t;
         record.Normal = normal;
-        return true; 
+        return true;
     }
 
     public bool Hit(ref Ray r, float tMin, float tMax, ref HitRecord record) {

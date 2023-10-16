@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace ACGRT;
 
@@ -15,5 +14,5 @@ public struct HitRecord {
 }
 public interface IHitable {
     public bool Hit(Ray ray, Interval interval, ref HitRecord record);
-    
+
 }

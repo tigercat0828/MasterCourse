@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace ACGRT {
     public class Camera {
+        private readonly Random random = new();
         public float AspectRatio { get; private set; } = 1.0f;
         public int ImageWidth { get; private set; } = 100;
-        public int SampleNum { get; private set; }= 10;
+        public int SampleNum { get; private set; } = 10;
         public int ImageHeight { get; private set; } = 100;
         public Vector3 Position { get; private set; }
+        public int MaxDepth { get; private set; } = 10;
 
         public Vector3 Pixel00Loc { get; private set; }
         private Vector3 deltaU;
         private Vector3 deltaV;
-        Random random = new ();
+      
         public void SetAspectRatio(float ratio) => AspectRatio = ratio;
         public void SetImageWidth(int width) => ImageWidth = width;
         public void SetSampleNum(int sample) => SampleNum = sample;
@@ -27,10 +23,10 @@ namespace ACGRT {
             for (int y = 0; y < ImageHeight; y++) {
                 //Console.WriteLine($"Scanline {y, 4} ...");
                 for (int x = 0; x < ImageWidth; x++) {
-                    Color fragment = new Color(0.0f, 0.0f, 0.0f);
+                    Color fragment = new(0.0f, 0.0f, 0.0f);
                     for (int i = 0; i < SampleNum; i++) {
-                        Ray ray = CastRay(x, y);
-                        fragment += RayColor(ray, world);
+                        Ray ray = GetRay(x, y);
+                        fragment += RayCast(ray, world, MaxDepth);
                     }
                     output.SetPixel(x, y, fragment, SampleNum);
                 }
@@ -39,14 +35,16 @@ namespace ACGRT {
             Console.WriteLine("Done");
         }
         public void RenderParallel(Scene world, string filename) {
-            Console.WriteLine($"Size : {ImageWidth} x {ImageHeight} Sample : {SampleNum}");
+            Console.WriteLine($"Size : {ImageWidth} x {ImageHeight} ");
+            Console.WriteLine($"Sample : {SampleNum}");
+            Console.WriteLine($"Depth : {MaxDepth}");
             RawImage output = new(ImageWidth, ImageHeight);
             Parallel.For(0, ImageHeight, y => {
                 for (int x = 0; x < ImageWidth; x++) {
-                    Color fragment = new Color(0.0f, 0.0f, 0.0f);
+                    Color fragment = new(0.0f, 0.0f, 0.0f);
                     for (int i = 0; i < SampleNum; i++) {
-                        Ray ray = CastRay(x, y);
-                        fragment += RayColor(ray, world);
+                        Ray ray = GetRay(x, y);
+                        fragment += RayCast(ray, world, MaxDepth);
                     }
                     output.SetPixel(x, y, fragment, SampleNum);
                 }
@@ -71,21 +69,27 @@ namespace ACGRT {
             Vector3 ViewPortUpperLeft = CameraPosition - new Vector3(0, 0, FocalLength) - ViewportU / 2 - ViewportV / 2;
             Pixel00Loc = ViewPortUpperLeft + 0.5f * (deltaU + deltaV);
         }
-        public Color RayColor(Ray ray, Scene world) {
+        public Color RayCast(Ray ray, Scene world, int depth) {
             HitRecord record = new();
-            Interval interval = new (0, float.MaxValue);
+            // error
+            Interval interval = new(0.001f, float.MaxValue);
+
+            if (depth <= 0) return Color.None;
             if (world.Hit(ray, interval, ref record)) {
-                return 0.5f * new Color(record.Normal + Vector3.One);
+                //Vector3 direction = random.UnitHemisphere(record.Normal);
+                Vector3 direction = record.Normal + random.UnitVector();    // Lambertian Distribution
+                return 0.5f * RayCast(new Ray(record.HitPoint, direction), world, depth-1);
             }
             // sky
             Vector3 uniDir = Vector3.Normalize(ray.direction);
             float a = 0.5f * (uniDir.Y + 1.0f);
             return (1.0f - a) * new Color(1.0f, 1.0f, 1.0f) + a * new Color(0.5f, 0.7f, 1.0f);
         }
-        private Ray CastRay(int i, int j) {
+        private Ray GetRay(int i, int j) {
             Vector3 pixelCenter = Pixel00Loc + i * deltaU + j * deltaV;
             Vector3 pixelSample = pixelCenter + PixelSampleSquare();
             Vector3 rayDirection = pixelSample - Position;
+            // non super-sample for anti-aliasing
             //Vector3 rayDirection = pixelCenter - Position;
             return new(Position, rayDirection);
         }

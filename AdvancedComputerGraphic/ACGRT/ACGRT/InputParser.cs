@@ -56,7 +56,7 @@ public static class InputParser {
                 case "R":
                     Width = int.Parse(tokens[1]);
                     Height = int.Parse(tokens[2]);
-                   
+
                     Console.WriteLine($"R {Width} x {Height}");
                     break;
                 default:
