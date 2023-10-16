@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace ACGRT {
     public class Camera {
-        public float AspectRatio = 1.0f;
+        public float AspectRatio { get; private set; } = 1.0f;
         public int ImageWidth { get; private set; } = 100;
-        public int SampleNum { get; private set; }= 1;
+        public int SampleNum { get; private set; }= 10;
         public int ImageHeight { get; private set; } = 100;
         public Vector3 Position { get; private set; }
 
@@ -23,17 +23,37 @@ namespace ACGRT {
         public void SetSampleNum(int sample) => SampleNum = sample;
         public void Render(Scene world) {
 
-            Console.WriteLine($"{ImageWidth} x {ImageHeight}");
+            Console.WriteLine($"Size : {ImageWidth} x {ImageHeight} Sample : {SampleNum}");
             RawImage output = new(ImageWidth, ImageHeight);
             for (int y = 0; y < ImageHeight; y++) {
                 //Console.WriteLine($"Scanline {y, 4} ...");
                 for (int x = 0; x < ImageWidth; x++) {
-                    Ray ray = CastRay(x, y);
-                    Color fragment = 255 * RayColor(ray, world);
-                    output.SetPixel(x, y, fragment);
+                    Color fragment = new Color(0.0f,0.0f,0.0f);
+                    for (int i = 0; i < SampleNum; i++) {
+                        Ray ray = CastRay(x, y);
+                        fragment += RayColor(ray, world);
+                    }
+                    output.SetPixel(x, y, fragment, SampleNum);
                 }
             }
-            output.SaveFile("Hello.ppm");
+            output.SaveFile("output.ppm");
+            Console.WriteLine("Done");
+        }
+        public void Render(Scene world, string filename) {
+            Console.WriteLine($"Size : {ImageWidth} x {ImageHeight} Sample : {SampleNum}");
+            RawImage output = new(ImageWidth, ImageHeight);
+            for (int y = 0; y < ImageHeight; y++) {
+                //Console.WriteLine($"Scanline {y, 4} ...");
+                for (int x = 0; x < ImageWidth; x++) {
+                    Color fragment = new Color(0.0f, 0.0f, 0.0f);
+                    for (int i = 0; i < SampleNum; i++) {
+                        Ray ray = CastRay(x, y);
+                        fragment += RayColor(ray, world);
+                    }
+                    output.SetPixel(x, y, fragment, SampleNum);
+                }
+            }
+            output.SaveFile(filename);
             Console.WriteLine("Done");
         }
         public void Initialize() {
@@ -65,9 +85,9 @@ namespace ACGRT {
         }
         private Ray CastRay(int i, int j) {
             Vector3 pixelCenter = Pixel00Loc + i * deltaU + j * deltaV;
-            //Vector3 pixelSample = pixelCenter + PixelSampleSquare();
-            //Vector3 rayDirection = pixelSample - Position;
-            Vector3 rayDirection = pixelCenter - Position;
+            Vector3 pixelSample = pixelCenter + PixelSampleSquare();
+            Vector3 rayDirection = pixelSample - Position;
+            //Vector3 rayDirection = pixelCenter - Position;
             return new(Position, rayDirection);
         }
         private Vector3 PixelSampleSquare() {
