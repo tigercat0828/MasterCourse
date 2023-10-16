@@ -21,24 +21,6 @@ namespace ACGRT {
         public void SetAspectRatio(float ratio) => AspectRatio = ratio;
         public void SetImageWidth(int width) => ImageWidth = width;
         public void SetSampleNum(int sample) => SampleNum = sample;
-        public void Render(Scene world) {
-
-            Console.WriteLine($"Size : {ImageWidth} x {ImageHeight} Sample : {SampleNum}");
-            RawImage output = new(ImageWidth, ImageHeight);
-            for (int y = 0; y < ImageHeight; y++) {
-                //Console.WriteLine($"Scanline {y, 4} ...");
-                for (int x = 0; x < ImageWidth; x++) {
-                    Color fragment = new Color(0.0f,0.0f,0.0f);
-                    for (int i = 0; i < SampleNum; i++) {
-                        Ray ray = CastRay(x, y);
-                        fragment += RayColor(ray, world);
-                    }
-                    output.SetPixel(x, y, fragment, SampleNum);
-                }
-            }
-            output.SaveFile("output.ppm");
-            Console.WriteLine("Done");
-        }
         public void Render(Scene world, string filename) {
             Console.WriteLine($"Size : {ImageWidth} x {ImageHeight} Sample : {SampleNum}");
             RawImage output = new(ImageWidth, ImageHeight);
@@ -53,6 +35,23 @@ namespace ACGRT {
                     output.SetPixel(x, y, fragment, SampleNum);
                 }
             }
+            output.SaveFile(filename);
+            Console.WriteLine("Done");
+        }
+        public void RenderParallel(Scene world, string filename) {
+            Console.WriteLine($"Size : {ImageWidth} x {ImageHeight} Sample : {SampleNum}");
+            RawImage output = new(ImageWidth, ImageHeight);
+            Parallel.For(0, ImageHeight, y => {
+                for (int x = 0; x < ImageWidth; x++) {
+                    Color fragment = new Color(0.0f, 0.0f, 0.0f);
+                    for (int i = 0; i < SampleNum; i++) {
+                        Ray ray = CastRay(x, y);
+                        fragment += RayColor(ray, world);
+                    }
+                    output.SetPixel(x, y, fragment, SampleNum);
+                }
+            });
+
             output.SaveFile(filename);
             Console.WriteLine("Done");
         }

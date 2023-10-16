@@ -1,4 +1,5 @@
 ﻿using ACGRT;
+using System.Diagnostics;
 using System.Diagnostics.Tracing;
 using System.Numerics;
 
@@ -14,12 +15,19 @@ public class Program {
         cam.SetImageWidth(1920);
         cam.Initialize();
         
-        
-        cam.SetSampleNum(1);
-        cam.Render(world, "sample1.ppm");
+
+        Stopwatch stopwatch = new();
+        stopwatch.Start();
 
         cam.SetSampleNum(10);
-        cam.Render(world, "sample10.ppm");
+        cam.Render(world, "output.ppm");
+
+        stopwatch.Stop();
+        
+        TimeSpan elapsedTime = stopwatch.Elapsed;
+        Console.WriteLine($"Time : {elapsedTime.TotalSeconds:F2}");
+        stopwatch.Reset();
+        
     }
 
 }
