@@ -9,12 +9,17 @@ public class Program {
         Scene world = new ();
         world.AddItem(new Sphere(new Vector3(0, 0, -1), 0.5f));
         world.AddItem(new Sphere(new Vector3(0, -100.5f, -1), 100f));
-        Camera cam = new() {
-            AspectRatio = 16.0f / 9.0f
-        };
-        cam.SetImageWidth(800);
+        Camera cam = new();
+        cam.SetAspectRatio(16/9.0f);
+        cam.SetImageWidth(1920);
         cam.Initialize();
-        cam.Render(world);
+        
+        
+        cam.SetSampleNum(1);
+        cam.Render(world, "sample1.ppm");
+
+        cam.SetSampleNum(10);
+        cam.Render(world, "sample10.ppm");
     }
 
 }
