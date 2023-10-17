@@ -69,11 +69,11 @@ public class PhongMat : Material {
 
         Vector3 lightPosition = new (5, 5, -5);
         Vector3 lightDirection = lightPosition - record.HitPoint;
-        Color lightColor = new (1, 1, 1);
+        Color lightColor = new (.1f, .1f, .1f);
         Vector3 CameraPos = new (0, 0, -1);
         Vector3 Normal = Vector3.Normalize(record.Normal);
         // ambient
-        Color ambient =new Color(.1f,.1f,.1f) * Albedo;
+        Color ambient = lightColor * Albedo;
 
         // diffuse
         float diffStrength = MathF.Max(Vector3.Dot(Normal, lightPosition), 0);
@@ -85,8 +85,9 @@ public class PhongMat : Material {
         Color specular = specStrength * lightColor;
 
         Vector3 scatterDir = Vector3.Reflect(Vector3.Normalize(ray.Direction), record.Normal);
+
         scattered = new Ray(record.HitPoint, scatterDir);
-        attenuation = (Ka * ambient + Kd * diffuse + Ks *Reflexive* specular) ;
+        attenuation = (Ka * ambient + Kd * diffuse + Ks * Reflexive * specular) ;
         return true;
     }
 

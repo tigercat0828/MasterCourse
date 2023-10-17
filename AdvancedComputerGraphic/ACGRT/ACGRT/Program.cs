@@ -9,7 +9,7 @@ public class Program {
         (Camera cam, Scene world) = InputParser.Parse("./Assets/hw2_input.txt");
 
         cam.Initialize();
-        cam.RenderParallel(world, "hw_output.ppm");
+        cam.RenderParallel(world, "hw_output.png");
         Console.Beep();
 
         Material M_Ground = new Lambertian(new Color(0.8f, 0.8f, 0.0f));

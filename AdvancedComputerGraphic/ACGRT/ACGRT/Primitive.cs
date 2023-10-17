@@ -22,8 +22,7 @@ public class Triangle : IHitable {
     }
 
     public bool Hit(Ray ray, Interval interval, ref HitRecord record) {
-        record = new();
-
+    
         // if parallel -> return
         float normalDotRay = Vector3.Dot(normal, ray.Direction);
         if (MathF.Abs(normalDotRay) < ERROR) return false;
@@ -93,3 +92,22 @@ public class Sphere : IHitable {
         return true;
     }
 }
+
+public class Quad : IHitable {
+    public Vector3 Corner;
+    public Vector3 U;
+    public Vector3 V;
+    public Material Material;
+
+    public Quad(Vector3 corner, Vector3 u, Vector3 v, Material material) {
+        Corner = corner;
+        U = u;
+        V = v;
+        Material = material;
+    }
+
+    public bool Hit(Ray ray, Interval interval, ref HitRecord record) {
+        throw new NotImplementedException();
+    }
+}
+ 
