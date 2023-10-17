@@ -1,8 +1,13 @@
-﻿using System.Numerics;
+﻿using System.Net;
+using System.Numerics;
 
 namespace ACGRT;
-public abstract class Material {
-    public abstract bool Scatter(Ray ray, HitRecord record, out Color attenuation, out Ray scattered);
+public class Material {
+    public virtual bool Scatter(Ray ray, HitRecord record, out Color attenuation, out Ray scattered) {
+        attenuation = Color.None;
+        scattered = new Ray();
+        return true;
+    }
 }
 public class Lambertian : Material {
     static readonly Random Random = new();
@@ -16,7 +21,14 @@ public class Lambertian : Material {
         Vector3 ScatterDirection = record.Normal + Random.UnitVector();
         if (ScatterDirection.NearZero()) ScatterDirection = record.Normal;
         scattered = new Ray(record.HitPoint, ScatterDirection);
+        
         attenuation = Albedo;
+        // ambient
+        // diffuse
+        // spcular
+
+
+
         return true;
     }
 }
@@ -51,14 +63,31 @@ public class PhongMat : Material {
         Ks = ks;
         Exponent = exponent;
         Reflexive = reflexive;
-
     }
 
     public override bool Scatter(Ray ray, HitRecord record, out Color attenuation, out Ray scattered) {
-        attenuation = Albedo;
-        scattered = new Ray();
+
+        Vector3 lightPosition = new (5, 5, -5);
+        Vector3 lightDirection = lightPosition - record.HitPoint;
+        Color lightColor = new (1, 1, 1);
+        Vector3 CameraPos = new (0, 0, -1);
+        Vector3 Normal = Vector3.Normalize(record.Normal);
+        // ambient
+        Color ambient =new Color(.1f,.1f,.1f) * Albedo;
+
+        // diffuse
+        float diffStrength = MathF.Max(Vector3.Dot(Normal, lightPosition), 0);
+        Color diffuse = diffStrength * lightColor * Albedo ;
+        // specular
+        Vector3 viewDir = Vector3.Normalize(CameraPos - record.HitPoint);
+        Vector3 lightReflectionDir = Vector3.Reflect(-lightDirection, Normal);
+        float specStrength = MathF.Pow(MathF.Max(Vector3.Dot(viewDir, lightReflectionDir), 0), Exponent);
+        Color specular = specStrength * lightColor;
+
+        Vector3 scatterDir = Vector3.Reflect(Vector3.Normalize(ray.Direction), record.Normal);
+        scattered = new Ray(record.HitPoint, scatterDir);
+        attenuation = (Ka * ambient + Kd * diffuse + Ks *Reflexive* specular) ;
         return true;
-        // phong modeling here
     }
 
     public override string ToString() {

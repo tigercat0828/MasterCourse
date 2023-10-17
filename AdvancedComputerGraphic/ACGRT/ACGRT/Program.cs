@@ -8,7 +8,9 @@ public class Program {
     private static void Main(string[] args) {
         (Camera cam, Scene world) = InputParser.Parse("./Assets/hw2_input.txt");
 
-
+        cam.Initialize();
+        cam.RenderParallel(world, "hw_output.ppm");
+        Console.Beep();
 
         Material M_Ground = new Lambertian(new Color(0.8f, 0.8f, 0.0f));
         Material M_CenterBall = new Lambertian(new Color(0.7f, 0.3f, 0.3f));
@@ -40,8 +42,10 @@ public class Program {
         TimeSpan elapsedTime = stopwatch.Elapsed;
         Console.WriteLine($"Time : {elapsedTime.TotalSeconds:F2}");
         stopwatch.Reset();
-        //Console.Beep();
+        Console.Beep();
 
+
+        camera.Initialize();
     }
 
 }

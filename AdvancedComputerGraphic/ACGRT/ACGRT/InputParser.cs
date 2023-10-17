@@ -59,6 +59,7 @@ public static class InputParser {
                 case "R":
                     int Width = int.Parse(tokens[1]);
                     int Height = int.Parse(tokens[2]);
+                    camera.SetAspectRatio(Width/Height);
                     camera.SetImageSize(Width, Height);
                     Console.WriteLine($"R {camera.ImageWidth} x {camera.ImageHeight}");
                     break;
@@ -66,6 +67,7 @@ public static class InputParser {
                     Vector3 viewDirection = new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3]));
                     Vector3 cameraUp = new Vector3(float.Parse(tokens[4]), float.Parse(tokens[5]), float.Parse(tokens[6]));
                     camera.LookAt = camera.Position + viewDirection;
+                    // camera.Vup = cameraUp;
                     // up as default
                     break;
                 case "L":
