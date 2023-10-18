@@ -23,7 +23,7 @@ public static class InputParser {
                         new Color(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3])),
                         float.Parse(tokens[4]), float.Parse(tokens[5]), float.Parse(tokens[6]),
                         float.Parse(tokens[7]), float.Parse(tokens[8]));
-
+                    Console.WriteLine($"M : {currentMaterial}");
                     break;
                 case "S":
                     Sphere sphere = new Sphere(
@@ -35,7 +35,7 @@ public static class InputParser {
                         float.Parse(tokens[4]),
                         currentMaterial
                     );
-                    Console.WriteLine($"S {sphere.Center}, {sphere.Radius}");
+                    Console.WriteLine($"S : {sphere}");
                     scene.Items.Add(sphere);
                     break;
                 case "T":
@@ -45,21 +45,21 @@ public static class InputParser {
                         new Vector3(float.Parse(tokens[7]), float.Parse(tokens[8]), float.Parse(tokens[9])),
                         currentMaterial
                     );
-                    Console.WriteLine($"T {triangle.pos1}, {triangle.pos2}, {triangle.pos3}");
                     scene.Items.Add(triangle);
+                    Console.WriteLine($"T : {triangle.pos1}, {triangle.pos2}, {triangle.pos3}");
                     break;
                 case "E":
                     camera.SetPosition(new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3])));
-                    Console.WriteLine($"E {camera.Position}");
+                    Console.WriteLine($"E : {camera.Position}");
                     break;
                 case "F":
                     camera.SetFOV(float.Parse(tokens[1]));
-                    Console.WriteLine($"FOV = {camera.vFOV}");
+                    Console.WriteLine($"F : {camera.FOV}");
                     break;
                 case "R":
                     int Width = int.Parse(tokens[1]);
                     int Height = int.Parse(tokens[2]);
-                    camera.SetAspectRatio(Width/Height);
+                    camera.SetAspectRatio(Width / Height);
                     camera.SetImageSize(Width, Height);
                     Console.WriteLine($"R {camera.ImageWidth} x {camera.ImageHeight}");
                     break;
@@ -67,12 +67,13 @@ public static class InputParser {
                     Vector3 viewDirection = new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3]));
                     Vector3 cameraUp = new Vector3(float.Parse(tokens[4]), float.Parse(tokens[5]), float.Parse(tokens[6]));
                     camera.LookAt = camera.Position + viewDirection;
+                    Console.WriteLine($"V : {viewDirection} , {cameraUp}");
                     // camera.Vup = cameraUp;
                     // up as default
                     break;
                 case "L":
-                    Vector3 lightPos = new(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3]));
-                    Console.WriteLine(lightPos);
+                    Light.Position = new(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3]));
+                    Console.WriteLine($"L : {Light.Position}");
                     break;
                 default:
                     Console.WriteLine("Unknown input type: " + type);

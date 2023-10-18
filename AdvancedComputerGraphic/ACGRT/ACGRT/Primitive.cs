@@ -1,63 +1,75 @@
 ﻿using System.Numerics;
 namespace ACGRT;
+using static MathF;
+using static Vector3;
 public class Triangle : IHitable {
-    public Vector3 pos1 { get; }
-    public Vector3 pos2 { get; }
-    public Vector3 pos3 { get; }
-    public Vector3 normal { get; private set; }
-    public Material Material { get; private set; }
-    public float area2;
-    private const float ERROR = 0.0001f;
-    public Triangle(Vector3 pos1, Vector3 pos2, Vector3 pos3, Material material) {
+    public Vector3 pos1;
+    public Vector3 pos2;
+    public Vector3 pos3;
 
-        Material = material;
+    public Vector3 Corner;
+    public Vector3 U;
+    public Vector3 V;
+    private Vector3 W;
+    public Vector3 Normal;
+    private float D;    // D = Ax+By+Cz
+    public Material Material;
+    //public Triangle(Vector3 corner, Vector3 u, Vector3 v, Material material) {
+    //    Corner = corner;
+    //    U = u;
+    //    V = v;
+    //    Material = material;
+    //    Vector3 n = Cross(u, v);
+    //    Normal = Normalize(n);
+    //    D = Dot(Normal, Corner); // Ax+By+Cz = N dot (x,y,z)
+    //    W = n / Dot(n, n);
+    //}
+    public Triangle(Vector3 pos1, Vector3 pos2, Vector3 pos3, Material material) {
         this.pos1 = pos1;
         this.pos2 = pos2;
         this.pos3 = pos3;
-        // pre-computed
-        Vector3 v0_v1 = pos3 - pos1;
-        Vector3 v0_v2 = pos3 - pos2;
-        normal = Vector3.Cross(v0_v2, v0_v1);
-        area2 = normal.Length();
+        Corner = pos1;
+        U = pos2 - pos1;
+        V = pos3 - pos1;
+        Material = material;
+        Vector3 n = Cross(U, V);
+        Normal = Normalize(n);
+        D = Dot(Normal, Corner); // Ax+By+Cz = N dot (x,y,z)
+        W = n / Dot(n, n);
     }
 
     public bool Hit(Ray ray, Interval interval, ref HitRecord record) {
-    
-        // if parallel -> return
-        float normalDotRay = Vector3.Dot(normal, ray.Direction);
-        if (MathF.Abs(normalDotRay) < ERROR) return false;
+        float denom = Dot(Normal, ray.Direction);
+        if (Abs(denom) < 1e-8f) return false; // parallel to the plane
+        float t = (D - Dot(Normal, ray.Origin)) / denom;
+        if (!interval.Contains(t)) return false;
 
-        float d = -Vector3.Dot(normal, pos1);
-        float t = -(Vector3.Dot(normal, ray.Origin) + d) / normalDotRay;
+        Vector3 intersection = ray.At(t);
+        Vector3 PlanarHitVector = intersection - Corner;
+        float alpha = Dot(W, Cross(PlanarHitVector, V));
+        float beta = Dot(W, Cross(U, PlanarHitVector));
 
-        // check whether the triangle is behind the eye
-        if (t < 0) return false;
+        if (!IsInterior(alpha, beta, ref record)) return false;
 
-        // intersection with the "plane"
-        Vector3 P = ray.Origin + t * ray.Direction;
-
-        // test whether inside
-        Vector3 edgeA = pos2 - pos1;
-        Vector3 vp0 = P - pos1;
-        Vector3 C = Vector3.Cross(edgeA, vp0);
-        if (Vector3.Dot(normal, C) < 0) return false;
-
-        Vector3 edgeB = pos3 - pos2;
-        Vector3 vp1 = P - pos2;
-        C = Vector3.Cross(edgeB, vp1);
-        if (Vector3.Dot(normal, C) < 0) return false;
-
-        Vector3 edgeC = pos1 - pos3;
-        Vector3 vp2 = P - pos3;
-        C = Vector3.Cross(edgeC, vp2);
-        if (Vector3.Dot(normal, C) < 0) return false;
-
-        record.HitPoint = P;
         record.t = t;
-        record.Normal = normal;
+        record.HitPoint = intersection;
         record.Material = Material;
+        record.SetNormalFace(ray, Normal);
         return true;
     }
+    bool IsInterior(float a, float b, ref HitRecord rec) {
+        // Given the hit point in plane coordinates, return false if it is outside the
+        // primitive, otherwise set the hit record UV coordinates and return true.
+
+        if ((a < 0) || (1 < a) || (b < 0) || (1 < b))
+            return false;
+
+        if (a + b > 1) return false;
+        //rec.u = a;
+        //rec.v = b;
+        return true;
+    }
+
 
 }
 public class Sphere : IHitable {
@@ -73,11 +85,11 @@ public class Sphere : IHitable {
     public bool Hit(Ray ray, Interval interval, ref HitRecord record) {
         Vector3 oc = ray.Origin - Center;
         float a = ray.Direction.LengthSquared();
-        float halfb = Vector3.Dot(ray.Direction, oc);
+        float halfb = Dot(ray.Direction, oc);
         float c = oc.LengthSquared() - Radius * Radius;
         float discriminant = halfb * halfb - a * c;
         if (discriminant < 0) return false;
-        float sqrtDis = MathF.Sqrt(discriminant);
+        float sqrtDis = Sqrt(discriminant);
         float root = (-halfb - sqrtDis) / a;
         if (!interval.Surrounds(root)) {
             root = (-halfb + sqrtDis) / a;
@@ -91,12 +103,18 @@ public class Sphere : IHitable {
 
         return true;
     }
+    public override string ToString() {
+        return $"({Center}, {Radius})";
+    }
 }
 
 public class Quad : IHitable {
     public Vector3 Corner;
     public Vector3 U;
     public Vector3 V;
+    private Vector3 W;
+    public Vector3 Normal;
+    private float D;    // D = Ax+By+Cz
     public Material Material;
 
     public Quad(Vector3 corner, Vector3 u, Vector3 v, Material material) {
@@ -104,10 +122,39 @@ public class Quad : IHitable {
         U = u;
         V = v;
         Material = material;
+        Vector3 n = Cross(u, v);
+        Normal = Normalize(n);
+        D = Dot(Normal, Corner); // Ax+By+Cz = N dot (x,y,z)
+        W = n / Dot(n, n);
     }
 
     public bool Hit(Ray ray, Interval interval, ref HitRecord record) {
-        throw new NotImplementedException();
+        float denom = Dot(Normal, ray.Direction);
+        if (Abs(denom) < 1e-8f) return false; // parallel to the plane
+        float t = (D - Dot(Normal, ray.Origin)) / denom;
+        if (!interval.Contains(t)) return false;
+
+        Vector3 intersection = ray.At(t);
+        Vector3 PlanarHitVector = intersection - Corner;
+        float alpha = Dot(W, Cross(PlanarHitVector, V));
+        float beta = Dot(W, Cross(U, PlanarHitVector));
+
+        if (!IsInterior(alpha, beta, ref record)) return false;
+
+        record.t = t;
+        record.HitPoint = intersection;
+        record.Material = Material;
+        record.SetNormalFace(ray, Normal);
+        return true;
+    }
+    bool IsInterior(float a, float b, ref HitRecord rec) {
+        // Given the hit point in plane coordinates, return false if it is outside the
+        // primitive, otherwise set the hit record UV coordinates and return true.
+
+        if ((a < 0) || (1 < a) || (b < 0) || (1 < b))
+            return false;
+        //rec.u = a;
+        //rec.v = b;
+        return true;
     }
 }
- 

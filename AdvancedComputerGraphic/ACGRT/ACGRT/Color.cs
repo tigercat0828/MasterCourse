@@ -24,8 +24,14 @@ public struct Color {
     public static Color operator *(float scalar, Color color) {
         return new Color(scalar * color.R, scalar * color.G, scalar * color.B);
     }
-    public static readonly Color Black = new(0, 0, 0);
-    public static readonly Color White = new(1, 1, 1);
+    public static readonly Color Black = new(0f, 0f, 0f);
+    public static readonly Color White = new(1f, 1f, 1f);
+    public static readonly Color Red = new(1f, 0f, 0f);
+    public static readonly Color Green = new(0f, 1f, 0f);
+    public static readonly Color Blue = new(0f, 0f, 1f);
+    public static readonly Color Yellow = new(1f, 1f, 0f);
+    public static readonly Color Magenta = new(1f, 0f, 1f);
+    public static readonly Color Cyan = new(0f, 1f, 1f);
     public static readonly Color None = new(0, 0, 0);
 
     public override string ToString() {

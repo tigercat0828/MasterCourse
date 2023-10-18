@@ -15,5 +15,4 @@ public struct HitRecord {
 }
 public interface IHitable {
     public bool Hit(Ray ray, Interval interval, ref HitRecord record);
-
 }

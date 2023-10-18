@@ -10,7 +10,7 @@ namespace ACGRT {
         public int ImageHeight { get; private set; } = 100;
         public Vector3 Position { get; private set; }
         public int MaxDepth { get; private set; } = 10;
-        public float vFOV { get; private set; } = 90f; // field of view
+        public float FOV { get; private set; } = 90f; // field of view
         public Vector3 LookFrom = new(0, 0, -1);
         public Vector3 LookAt = new(0, 0, 0);
         public Vector3 Vup = new(0, 1, 0);
@@ -22,11 +22,12 @@ namespace ACGRT {
             ImageWidth = width;
             ImageHeight = height;
         }
+        public void SetMaxDepth(int depth) => MaxDepth = depth;
         public void SetPosition(Vector3 position) => Position = position;
         public void SetAspectRatio(float ratio) => AspectRatio = ratio;
         public void SetImageWidth(int width) => ImageWidth = width;
         public void SetSampleNum(int sample) => SampleNum = sample;
-        public void SetFOV(float fov) => vFOV = fov;
+        public void SetFOV(float fov) => FOV = fov;
         public void Render(Scene world, string filename) {
             Console.WriteLine($"Size : {ImageWidth} x {ImageHeight} Sample : {SampleNum}");
             RawImage output = new(ImageWidth, ImageHeight);
@@ -69,7 +70,7 @@ namespace ACGRT {
             Position = LookFrom;
             // Camera
             float FocalLength = (LookFrom - LookAt).Length();
-            float theta = vFOV * DEG2RAD;
+            float theta = FOV * DEG2RAD;
             float h = MathF.Tan(theta / 2);
             //  float h = MathF.Tan(theta / 2); YFLIP
             float ViewportHeight = 2.0f * h * FocalLength;
@@ -94,10 +95,11 @@ namespace ACGRT {
 
             if (depth <= 0) return Color.None;
             if (world.Hit(ray, interval, ref record)) {
-                if (record.Material.Scatter(ray, record, out Color attenuation, out Ray scattered)) {
+                Color attenuation = new ();
+                Ray scattered = new ();
+                if (record.Material.Scatter(ray, record, ref attenuation, ref scattered)) {
                     return attenuation * RayCast(scattered, world, depth - 1);
                 }
-
                 return Color.None;
             }
             // sky
