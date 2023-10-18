@@ -1,8 +1,10 @@
-﻿using System.Numerics;
-
+﻿using System.ComponentModel;
+using System.Numerics;
+using static System.MathF;
+using static System.Numerics.Vector3;
 namespace ACGRT {
     public class Camera {
-        const float DEG2RAD = 0.0174532925f;
+        const float DEG2RAD = MathF.PI / 180f;
         private readonly Random random = new();
         public float AspectRatio { get; private set; } = 1.0f;
         public int ImageWidth { get; private set; } = 100;
@@ -35,10 +37,10 @@ namespace ACGRT {
                 //Console.WriteLine($"Scanline {y, 4} ...");
                 for (int x = 0; x < ImageWidth; x++) {
                     Color fragment = new(0.0f, 0.0f, 0.0f);
-                    for (int i = 0; i < SampleNum; i++) {
-                        Ray ray = GetRay(x, y);
-                        fragment += RayCast(ray, world, MaxDepth);
-                    }
+                   
+                     Ray ray = GetRay(x, y);
+                     fragment += RayCast(ray, world, MaxDepth);
+          
                     output.SetPixel(x, y, fragment, SampleNum);
                 }
             }
@@ -71,13 +73,13 @@ namespace ACGRT {
             // Camera
             float FocalLength = (LookFrom - LookAt).Length();
             float theta = FOV * DEG2RAD;
-            float h = MathF.Tan(theta / 2);
-            //  float h = MathF.Tan(theta / 2); YFLIP
+            float h = MathF.Tan(theta / 2)/FocalLength;
+         
             float ViewportHeight = 2.0f * h * FocalLength;
             float ViewportWidth = ViewportHeight * (ImageWidth / (float)ImageHeight);
-            W = Vector3.Normalize(LookFrom - LookAt);
-            U = Vector3.Normalize(Vector3.Cross(Vup, W));
-            V = Vector3.Cross(W, U);
+            W = Normalize(LookFrom - LookAt);
+            U = Normalize(Cross(Vup, W));
+            V = Cross(W, U);
 
 
             Vector3 ViewportU = ViewportWidth * U;
@@ -88,31 +90,56 @@ namespace ACGRT {
             Vector3 ViewPortUpperLeft = Position - (FocalLength * W) - ViewportU / 2 - ViewportV / 2;
             Pixel00Loc = ViewPortUpperLeft + 0.5f * (deltaU + deltaV);
         }
+        public static int count=0;
         public Color RayCast(Ray ray, Scene world, int depth) {
             HitRecord record = new();
             // error
             Interval interval = new(0.001f, float.MaxValue);
-
             if (depth <= 0) return Color.None;
             if (world.Hit(ray, interval, ref record)) {
-                Color attenuation = new ();
-                Ray scattered = new ();
-                if (record.Material.Scatter(ray, record, ref attenuation, ref scattered)) {
-                    return attenuation * RayCast(scattered, world, depth - 1);
-                }
-                return Color.None;
+                Color pixel = new();
+                Vector3 normal = Normalize(record.Normal);
+                PhongMat material = record.Material as PhongMat;
+                Vector3 lightDir = Light.Position - record.HitPoint;
+                Ray reverseLightRay = new(record.HitPoint + (lightDir) * 0.00001f, lightDir);
+                Vector3 viewDir = Position - record.HitPoint;
+                Vector3 lightReflect = Reflect(-lightDir, normal);
+                // ambient
+                Color ambient = material.Ka * Light.Intensity * material.Albedo;
+                //if (Dot(lightDir, normal) < 0) { // in shadow
+                //    count++;
+                //    pixel = ambient;
+                //    Console.WriteLine(count);
+                //    return pixel;
+                //}
+
+                //if (world.Hit(reverseLightRay)) {
+                //    count++;
+                //    pixel = ambient;
+                //    Console.WriteLine(count);
+                //    return pixel;
+                //}
+                // diffuse
+                float diffStr = Max(Dot(lightDir, normal),0);
+                Color diffuse = material.Kd * diffStr * Light.Intensity * material.Albedo;
+
+                // specular
+                Color specular = new();
+                float specStr = Pow(Max(Dot(viewDir, lightReflect), 0), 1024);
+                //specular = material.Ks * specStr * Light.Intensity * material.Albedo;
+                pixel = ambient + diffuse+ specular;
+                return pixel;
             }
-            // sky
-            Vector3 uniDir = Vector3.Normalize(ray.Direction);
-            float a = 0.5f * (uniDir.Y + 1.0f);
-            return (1.0f - a) * new Color(1.0f, 1.0f, 1.0f) + a * new Color(0.5f, 0.7f, 1.0f);
+            return Color.None;
         }
+        
         private Ray GetRay(int i, int j) {
             Vector3 pixelCenter = Pixel00Loc + i * deltaU + j * deltaV;
-            Vector3 pixelSample = pixelCenter + PixelSampleSquare();
-            Vector3 rayDirection = pixelSample - Position;
-            // non super-sample for anti-aliasing
-            //Vector3 rayDirection = pixelCenter - Position;
+            //Vector3 pixelSample = pixelCenter + PixelSampleSquare();
+            //Vector3 rayDirection = pixelSample - Position;
+
+            //non super-sample for anti - aliasing
+            Vector3 rayDirection = pixelCenter - Position;
             return new(Position, rayDirection);
         }
         private Vector3 PixelSampleSquare() {

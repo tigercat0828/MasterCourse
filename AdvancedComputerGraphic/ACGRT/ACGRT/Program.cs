@@ -13,7 +13,7 @@ public class Program {
             case 1: // parse input
                 (cam, Scene world) = InputParser.Parse("./Assets/hw2_input.txt");
                 cam.Initialize();
-                cam.RenderParallel(world, "hw_output.png");
+                cam.Render(world, "hw_output.png");
                 break;
             case 2: // Quads
                 Scene QuadScene = new();

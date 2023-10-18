@@ -8,5 +8,6 @@ using System.Threading.Tasks;
 namespace ACGRT {
     public class Light {
         public static Vector3 Position = new ();
+        public static Color Intensity = Color.White;
     }
 }

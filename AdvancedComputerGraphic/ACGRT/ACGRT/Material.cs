@@ -43,7 +43,7 @@ public class PhongMat : Material {
     public float Ka;
     public float Kd;
     public float Ks;
-    public float Exponent;
+    public float Shineness;
     public float Reflexive;
     // light here maybe
     public PhongMat() {
@@ -54,7 +54,7 @@ public class PhongMat : Material {
         Ka = ka;
         Kd = kd;
         Ks = ks;
-        Exponent = exponent;
+        Shineness = exponent;
         Reflexive = reflexive;
     }
     public override bool Scatter(Ray ray, HitRecord record, ref Color attenuation, ref Ray scattered) {
@@ -73,7 +73,7 @@ public class PhongMat : Material {
         // specular
         Vector3 viewDir = Normalize(CameraPos - record.HitPoint);
         Vector3 lightReflectionDir = Reflect(-lightDirection, Normal);
-        float specStrength = Pow(Max(Dot(viewDir, lightReflectionDir), 0), Exponent);
+        float specStrength = Pow(Max(Dot(viewDir, lightReflectionDir), 0), Shineness);
         Color specular = specStrength * lightColor;
 
         Vector3 scatterDir = Reflect(Normalize(ray.Direction), record.Normal);
@@ -85,6 +85,6 @@ public class PhongMat : Material {
     }
 
     public override string ToString() {
-        return $"{Albedo}, {Ka}, {Kd}, {Ks}, {Exponent}, {Reflexive}";
+        return $"{Albedo}, {Ka}, {Kd}, {Ks}, {Shineness}, {Reflexive}";
     }
 }

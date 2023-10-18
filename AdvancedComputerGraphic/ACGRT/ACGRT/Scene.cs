@@ -21,4 +21,13 @@ public class Scene {
         }
         return hitAny;
     }
+    public bool Hit(Ray ray) {
+        foreach (var item in Items) {
+            HitRecord temp = new();
+            if (item.Hit(ray, new Interval(), ref temp)) {
+                return true;
+            }
+        }
+        return false;
+    }
 };
